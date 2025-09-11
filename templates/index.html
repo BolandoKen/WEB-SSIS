@@ -1,10 +1,9 @@
 {% extends "base.html" %}
-{% from "components/_button.html" import button %}
+{% from "components/_sidebar.html" import sidebar %}
 
 {% block title %}Home | Web SSIS Project{% endblock %}
 
 {% block body %}
-
-    {{ button("/student", "Student", "Users.svg") }}
+    {{ sidebar()}}
     
 {% endblock %}
