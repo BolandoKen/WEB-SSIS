@@ -1,0 +1,20 @@
+
+@import url('base.css');
+@import url('components.css');
+@import url('layout.css');
+
+body {
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+align-items: flex-end;
+padding: 60px;
+gap: 60px;
+
+background: #E7E7E7;
+
+}
+
+
+

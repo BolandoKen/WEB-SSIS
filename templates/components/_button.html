@@ -1,0 +1,8 @@
+{% macro button(href="#", label="Button", icon=None) %}
+<a href="{{ href }}" class="btn-component">
+  {% if icon %}
+    <img src="{{ url_for('static', filename='icons/' ~ icon) }}" alt="{{ label }} icon" class="btn-icon">
+  {% endif %}
+  <span class="btn-label">{{ label }}</span>
+</a>
+{% endmacro %}

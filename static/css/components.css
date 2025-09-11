@@ -1,0 +1,41 @@
+.btn-component {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 60px;
+  gap: 10px;
+
+  width: 252px;
+  height: 56px;
+
+  background: #E7E7E7;
+  border-radius: 50px;
+
+  text-decoration: none; 
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-component:hover{
+width: 252px;
+height: 56px;
+
+box-shadow: 10px 10px 30px #AEAEC0, -10px -10px 30px #FFFFFF;
+}
+
+.btn-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.btn-label {
+  font-family: 'Poppins', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 36px;
+  color: #000000;
+
+  flex: none;
+}
