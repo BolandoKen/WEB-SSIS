@@ -1,0 +1,9 @@
+{% from "components/_button.html" import button %}
+
+{% macro sidebar() %}
+<div class="sidebar">
+  {{ button(href='', label='Students', icon='Users.svg') }}
+  {{ button(href='', label='Programs', icon='File.svg') }}
+  {{ button(href='', label='Colleges', icon='Book.svg') }}
+</div>
+{% endmacro %}

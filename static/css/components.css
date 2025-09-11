@@ -1,3 +1,5 @@
+@import url('base.css');
+
 .btn-component {
   display: flex;
   flex-direction: row;
@@ -20,7 +22,7 @@
 width: 252px;
 height: 56px;
 
-box-shadow: 10px 10px 30px #AEAEC0, -10px -10px 30px #FFFFFF;
+box-shadow: var(--protruding);
 }
 
 .btn-icon {
@@ -39,3 +41,27 @@ box-shadow: 10px 10px 30px #AEAEC0, -10px -10px 30px #FFFFFF;
 
   flex: none;
 }
+
+.sidebar {
+
+    /* Auto layout */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0px 10px;
+    gap: 30px;
+
+    height: 100vh;
+
+    background: var(--color-neutral);
+    box-shadow: var(--protruding);
+    border-radius: 20px;
+
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+
+}
+

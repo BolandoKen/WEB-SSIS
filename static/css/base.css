@@ -13,10 +13,10 @@
 
     /* Shadows */
     --protruding: 
-    10 10 30px #AEAEC0,
-    -10 -10 30 #FFFFFF;
+    10px 10px 30px #AEAEC0,
+    -10px -10px 30px #FFFFFF;
 
     --sunken:
-   inset 10 10 30px #AEAEC0,
-    -10 -10 30 #FFFFFF;
+   inset 10px 10px 30px #AEAEC0,
+    -10px -10px 30px #FFFFFF;
 }

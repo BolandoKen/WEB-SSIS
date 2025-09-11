@@ -9,10 +9,10 @@ body {
 display: flex;
 flex-direction: row;
 align-items: flex-end;
-padding: 60px;
-gap: 60px;
+padding: 20px;
+gap: 20px;
 
-background: #E7E7E7;
+background: var(--color-neutral);
 
 }
 
