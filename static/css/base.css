@@ -1,0 +1,22 @@
+:root{
+    /* Colors */
+    --color-primary: #4B4EFD;
+    --color-neutral: #E7E7E7;
+    --color-neutral-grey: #9CA2AE;
+    --color-destructive: #F04444;
+
+    /* Typography */
+    --font-family-base: 'Poppins', sans-serif;
+    --font-size-big: 24px;
+    --font-size-title: 32px;
+
+
+    /* Shadows */
+    --protruding: 
+    10 10 30px #AEAEC0,
+    -10 -10 30 #FFFFFF;
+
+    --sunken:
+   inset 10 10 30px #AEAEC0,
+    -10 -10 30 #FFFFFF;
+}
