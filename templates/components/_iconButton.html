@@ -1,7 +1,10 @@
-{% macro iconButton(href="#", icon=None) %}
+{% macro iconButton(href="#", icon=None, hover_icon=None) %}
 <a href="{{ href }}" class="icon-button">
   {% if icon %}
-    <img src="{{ url_for('static', filename='icons/' ~ icon) }}" alt="{{ label }} icon" class="btn-icon">
+    <img 
+      src="{{ url_for('static', filename='icons/' ~ icon) }}" 
+      data-hover="{{ url_for('static', filename='icons/' ~ hover_icon) }}"
+      class="btn-icon">
   {% endif %}
 </a>
 {% endmacro %}
