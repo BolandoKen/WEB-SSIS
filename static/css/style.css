@@ -1,20 +1,23 @@
-
 @import url('base.css');
 @import url('components.css');
 @import url('layout.css');
 
 body {
-
-/* Auto layout */
-display: flex;
-flex-direction: row;
-align-items: flex-end;
-padding: 20px;
-gap: 20px;
-
-background: var(--color-neutral);
-
+    padding: 20px;
+    background: #e0e0e0;
 }
+main {
+  display: flex;
+  flex-direction: row;   /* row is default, can be removed */
+  align-items: stretch; /* pushes items to bottom */
+  justify-content: flex-start; /* horizontally center all items */
+  
+  gap: 20px;
+
+  flex: 1;
+  height: 94vh;
+ }
+
 
 
 
