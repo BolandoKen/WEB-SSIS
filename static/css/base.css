@@ -1,7 +1,7 @@
 :root{
     /* Colors */
     --color-primary: #4B4EFD;
-    --color-neutral: #E7E7E7;
+    --color-neutral: #e0e0e0;
     --color-neutral-grey: #9CA2AE;
     --color-destructive: #F04444;
 
@@ -13,8 +13,8 @@
 
     /* Shadows */
     --protruding: 
-    10px 10px 30px #AEAEC0,
-    -10px -10px 30px #FFFFFF;
+    8px 8px 16px #bebebe,
+    -8px -8px 16px #FFFF;
 
     --sunken:
    inset 10px 10px 30px #AEAEC0,
