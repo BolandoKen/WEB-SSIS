@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 {% from "components/_sidebar.html" import sidebar %}
+{% from "components/_contentBox.html" import contentBox %}
 
 {% block title %}Home | Web SSIS Project{% endblock %}
 
 {% block body %}
     {{ sidebar()}}
-    
+    {{ contentBox()}}
 {% endblock %}
