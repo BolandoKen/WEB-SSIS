@@ -4,6 +4,8 @@
     --color-neutral: #e0e0e0;
     --color-neutral-grey: #9CA2AE;
     --color-destructive: #F04444;
+    --color-primary-100: #E1E1FD;
+    --color-primary-200: #C3C4FD;
 
     /* Typography */
     --font-family-base: 'Poppins', sans-serif;
@@ -17,6 +19,6 @@
     -8px -8px 16px #FFFF;
 
     --sunken:
-   inset 10px 10px 30px #AEAEC0,
-    -10px -10px 30px #FFFFFF;
+   inset -6px -6px 10px #AEAEC0,
+    -6px -6px 10px #FFFFFF;
 }

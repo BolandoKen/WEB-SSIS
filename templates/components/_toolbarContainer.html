@@ -1,7 +1,9 @@
 {% from "components/_toolbar.html" import toolbar %}
+{% from "components/_addButton.html" import addButton %}
 
 {% macro toolbarContainer() %}
 <div class="toolbar-container">
   {{ toolbar()}}
+  {{ addButton(href='#')}}
 </div>
 {% endmacro %}
