@@ -12,7 +12,7 @@ main {
   align-items: stretch; /* pushes items to bottom */
   justify-content: flex-start; /* horizontally center all items */
   
-  gap: 20px;
+  gap: 40px;
 
   flex: 1;
   height: 94vh;

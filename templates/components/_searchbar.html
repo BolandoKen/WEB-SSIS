@@ -1,0 +1,6 @@
+{% macro searchbar() %}
+<div class="searchbar">
+    <img src="{{ url_for('static', filename='icons/search.svg') }}" alt="{{ label }} icon" class="search-icon">
+      <p class="searchbar-text">Search</p>
+</div>
+{% endmacro %}
