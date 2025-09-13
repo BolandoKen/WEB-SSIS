@@ -1,0 +1,5 @@
+{% macro addButton(href='#') %}
+<a href="{{ href }}" class="add-button">
+  <img src="{{ url_for('static', filename='icons/plus.svg') }}" alt="{{ label }} icon" class="btn-icon">
+</a>
+{% endmacro %}

@@ -65,6 +65,17 @@ box-shadow: var(--protruding);
     align-self: stretch;
 }
 
+.content-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+
+  flex: 1;           /* grow to take all remaining space */
+  order: 1;
+  align-self: stretch;
+}
+
 .icon-button{
   /* Auto layout */
   display: flex;
@@ -150,13 +161,32 @@ color: #000000;
   gap: 20px;
 }
 
-.content-box {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
+.add-button{
+/* Auto layout */
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: center;
+padding: 20px;
+gap: 10px;
 
-  flex: 1;           /* grow to take all remaining space */
-  order: 1;
-  align-self: stretch;
+width: 84px;
+height: 84px;
+
+/* Primary 100 */
+background: var(--color-primary-100);
+/* Protruding */
+box-shadow: var(--protruding);
+border-radius: 20px;
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+transition: all 0.3s ease-in-out;
+}
+
+.add-button:hover{
+  background-color: var(--color-primary-200);
 }
