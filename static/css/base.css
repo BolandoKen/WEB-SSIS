@@ -19,6 +19,6 @@
     -8px -8px 16px #FFFF;
 
     --sunken:
-    inset -6px -6px 10px #bebebe,
-    inset 6px 6px 10px #FFFF;
+    inset -6px -6px 10px #FFFF,
+    inset 6px 6px 10px #bebebe;
 }
