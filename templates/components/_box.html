@@ -1,15 +1,12 @@
-{% from "components/_searchbar.html" import searchbar %}
-
-{% macro box() %}
+{% from "components/_searchbar.html" import searchbar %} {% from
+"components/_table.html" import table %} {% macro box() %}
 <div class="box">
-    <div class="box-tool-section">
-        {{ searchbar()}}
-    </div>
-    <div class="bix-table-section">
-
-    </div>
-    <div class="box-button-section">
-
-    </div>
+  <div class="box-tool-section">{{ searchbar()}}</div>
+  <div class="box-table-section">
+    {{ table( ["ID Number", "Firstname", "Lastname", "Gender", "Year Level",
+    "Program"], [ ["2023-1864", "kilmer douglas bernardo", "Bolando", "Male",
+    "3", "BSCS"] ] ) }}
+  </div>
+  <div class="box-button-section"></div>
 </div>
 {% endmacro %}
