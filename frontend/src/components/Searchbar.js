@@ -1,7 +1,7 @@
 import React from "react";
 import "../styles/Searchbar.css";
 
-function SearchBar() {
+function Searchbar() {
   return (
     <div className="searchbar">
       <img
@@ -14,4 +14,4 @@ function SearchBar() {
   );
 }
 
-export default SearchBar;
+export default Searchbar;
