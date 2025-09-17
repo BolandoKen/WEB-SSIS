@@ -1,0 +1,15 @@
+.toolbar-container{
+  /* Auto layout */
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 0px;
+  gap: 40px;
+
+  height: 124px;
+
+  /* Inside auto layout */
+  flex: 0;
+  align-self: stretch;
+}
+

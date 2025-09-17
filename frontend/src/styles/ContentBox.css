@@ -1,0 +1,13 @@
+
+.content-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+
+  gap: 40px;
+
+  flex: 1;           /* grow to take all remaining space */
+  order: 1;
+  align-self: stretch;
+}

@@ -1,0 +1,40 @@
+.toolbar{
+  /* Auto layout */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  gap: 20px;
+
+  height: 84px;
+
+  /* Neutral */
+  background: var(--color-neutral);
+  /* Protruding */
+  box-shadow: var(--protruding);
+  border-radius: 20px;
+
+  /* Inside auto layout */
+  flex: 1;
+}
+
+.title {
+/* Title */
+font-family: 'Inter', sans-serif;
+font-style: normal;
+font-weight: 600;
+font-size: 32px;
+/* identical to box height */
+display: flex;
+align-items: center;
+
+color: #000000;
+}
+
+.toolbar-actions{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+}

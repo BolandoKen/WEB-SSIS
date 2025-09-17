@@ -1,20 +1,21 @@
-{% macro table(columns, rows) %}
-<table class="table">
-  <thead class="table-header">
+import React from "react"; import "./Table.css"; function Table({ columns, rows
+}) { return (
+<table className="table">
+  <thead className="table-header">
     <tr>
-      {% for col in columns %}
-      <th class="table-header-text">{{ col }}</th>
-      {% endfor %}
+      {columns.map((col, index) => (
+      <th key="{index}" className="table-header-text">{col}</th>
+      ))}
     </tr>
   </thead>
-  <tbody class="table-items">
-    {% for row in rows %}
-    <tr>
-      {% for cell in row %}
-      <td class="table-cell">{{ cell }}</td>
-      {% endfor %}
+  <tbody className="table-items">
+    {rows.map((row, rowIndex) => (
+    <tr key="{rowIndex}">
+      {row.map((cell, cellIndex) => (
+      <td key="{cellIndex}" className="table-cell">{cell}</td>
+      ))}
     </tr>
-    {% endfor %}
+    ))}
   </tbody>
 </table>
-{% endmacro %}
+); } export default Table;
