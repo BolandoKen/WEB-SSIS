@@ -1,24 +1,26 @@
 import React from "react";
-import "../styles/Box.css";
-import SearchBar from "./Searchbar";
+import Searchbar from "./Searchbar";
 import Table from "./Table";
+import "../styles/Box.css";
 
-function Box({ tableHeaders, tableData }) {
+function Box() {
+  const columns = ["ID Number", "Firstname", "Lastname", "Gender", "Year Level", "Program"];
+  const rows = [
+    ["2023-1864", "Kilmer Douglas Bernardo", "Bolando", "Male", "3", "BSCS"]
+  ];
+
   return (
     <div className="box">
-      {/* Search section */}
       <div className="box-tool-section">
-        <SearchBar />
+        <Searchbar />
       </div>
 
-      {/* Table section */}
       <div className="box-table-section">
-        <Table headers={tableHeaders} data={tableData} />
+        <Table columns={columns} rows={rows} />
       </div>
 
-      {/* Button section */}
       <div className="box-button-section">
-        {/* You can drop AddButton, SaveButton, etc. here later */}
+        {/* later: add buttons here */}
       </div>
     </div>
   );
