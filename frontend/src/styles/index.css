@@ -1,0 +1,46 @@
+/* index.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+:root {
+  /* Colors */
+  --color-primary: #4B4EFD;
+  --color-neutral: #e0e0e0;
+  --color-neutral-grey: #9CA2AE;
+  --color-destructive: #F04444;
+  --color-primary-100: #E1E1FD;
+  --color-primary-200: #C3C4FD;
+
+  /* Typography */
+  --font-family-base: 'Poppins', sans-serif;
+  --font-size-big: 24px;
+  --font-size-title: 32px;
+  --font-size-regular: 16px;
+
+  /* Shadows */
+  --protruding: 
+    8px 8px 16px #bebebe,
+    -8px -8px 16px #FFFF;
+
+  --sunken:
+    inset -6px -6px 10px #FFFF,
+    inset 6px 6px 10px #bebebe;
+}
+
+body{
+  padding: 20px;
+  background: #e0e0e0;
+}
+
+.app{
+  display: flex;
+  flex-direction: row;   /* row is default, can be removed */
+  align-items: stretch; /* pushes items to bottom */
+  justify-content: flex-start; /* horizontally center all items */
+  
+  gap: 40px;
+
+  flex: 1;
+  height: 94vh;
+}

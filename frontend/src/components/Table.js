@@ -1,0 +1,31 @@
+import React from "react";
+import "../styles/Table.css";
+
+function Table({ columns, rows }) {
+  return (
+    <table className="table">
+      <thead className="table-header">
+        <tr>
+          {columns.map((col, index) => (
+            <th key={index} className="table-header-text">
+              {col}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody className="table-items">
+        {rows.map((row, rowIndex) => (
+          <tr key={rowIndex}>
+            {row.map((cell, cellIndex) => (
+              <td key={cellIndex} className="table-cell">
+                {cell}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+export default Table;
