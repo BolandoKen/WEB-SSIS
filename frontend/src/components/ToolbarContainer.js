@@ -6,7 +6,7 @@ import AddButton from "./AddButton";
 function ToolbarContainer({ title }) {
   return (
     <div className="toolbar-container">
-      <Toolbar title="Students" />
+      <Toolbar title={title} />
       <AddButton href="#" />
     </div>
   );
