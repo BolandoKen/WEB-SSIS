@@ -38,3 +38,7 @@ box-shadow: var(--protruding);
 
   flex: none;
 }
+
+.btn-component.active {
+  box-shadow: var(--protruding);
+}
