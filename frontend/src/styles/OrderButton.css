@@ -1,0 +1,17 @@
+
+.order-button{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  padding: 10px;
+
+
+
+  background: var(--color-neutral);
+  border-radius: 50px;
+  box-shadow: var(--protruding);
+
+  transition: all 0.3s ease-in-out;
+}
