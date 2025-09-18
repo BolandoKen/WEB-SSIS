@@ -7,11 +7,12 @@
   padding: 10px 20px;
   gap: 10px;
 
-  width: 160px;
-  height: 36px;
+  width: 200px;
+  height: 44px;
 
   background: var(--color-neutral);
   border-radius: 50px;
+  border: none;
 
   text-decoration: none; 
   transition: all 0.3s ease-in-out;
