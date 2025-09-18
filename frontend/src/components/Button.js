@@ -1,18 +1,18 @@
 import React from "react";
-import "../styles/Button.css";  // import the CSS
+import "../styles/Button.css";
 
-function Button({ href = "#", label = "Button", icon = null }) {
+function Button({ label = "Button", icon = null, onClick }) {
   return (
-    <a href={href} className="btn-component">
+    <button className="btn-component" onClick={onClick}>
       {icon && (
         <img
-          src={`/icons/${icon}`} // icons live in public/icons
+          src={`/icons/${icon}`}
           alt={`${label} icon`}
           className="btn-icon"
         />
       )}
       <span className="btn-label">{label}</span>
-    </a>
+    </button>
   );
 }
 

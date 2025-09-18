@@ -3,11 +3,11 @@ import "../styles/ContentBox.css";
 import ToolbarContainer from "./ToolbarContainer";
 import Box from "./Box";
 
-function ContentBox(){
+function ContentBox({activePage}){
     return (
        <div className="content-box">
             <ToolbarContainer />
-            <Box />
+            <Box activePage = {activePage} />
        </div>
     )
 }
