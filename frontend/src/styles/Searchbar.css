@@ -2,10 +2,10 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 12px 60px;
+  padding: 10px 20px;
   gap: 10px;
 
-  height: 40px;
+  height: 18px;
 
   background: var(--color-neutral);
   box-shadow: var(--sunken);
@@ -13,33 +13,15 @@
 
   /* Inside auto layout */
   flex: none;
-  align-self: stretch;
   order: 0;
   flex-grow: 1;
-}
-
-.searchbar-icon{
-  width: 24px;
-  height: 24px;
-
-  flex: none;
-  order: 0;
-  flex-grow: 0;
 }
 
 .searchbar-text{
   color: var(--color-neutral-grey);
 
-  width: 85px;
-  height: 36px;
-
   font-family: 'Poppins', sans-serif;
   font-style: normal;
-  font-weight: 400;
-  font-size: 24px;
-  line-height: 36px;
+  font-size: var(--font-size-regular);
 
-  flex: none;
-  order: 1;
-  flex-grow: 0;
 }
