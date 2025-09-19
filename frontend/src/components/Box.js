@@ -3,6 +3,7 @@ import Searchbar from "./Searchbar";
 import Table from "./Table";
 import Dropdown from "./Dropdown";
 import OrderButton from "./OrderButton";
+import PageButton from "./PageButton";
 import "../styles/Box.css";
 
 function Box({ activePage }) {
@@ -68,7 +69,16 @@ function Box({ activePage }) {
       </div>
 
       <div className="box-button-section">
-        {/* later: add buttons here */}
+        <PageButton
+          href="#"
+          icon="/icons/ChevronLeft.svg"
+          hoverIcon="/icons/ChevronLeftHover.svg"
+        />
+        <PageButton
+          href="#"
+          icon="/icons/ChevronRight.svg"
+          hoverIcon="/icons/ChevronRightHover.svg"
+        />
       </div>
     </div>
   );
