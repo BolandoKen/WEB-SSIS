@@ -1,0 +1,23 @@
+
+.page-button{
+  /* Auto layout */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  gap: 10px;
+  box-shadow: var(--protruding);
+
+  width: 32px;
+  height: 32px;
+
+  /* Neutral */
+  background: var(--color-neutral);
+  border-radius: 50px;
+
+  /* Inside auto layout */
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+}
