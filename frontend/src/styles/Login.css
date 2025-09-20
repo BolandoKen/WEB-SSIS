@@ -1,0 +1,130 @@
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-neutral);
+
+    flex: 1;
+    height: 90vh;
+    
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    gap: 10px;
+
+    width: fit-content;
+    height: fit-content ;
+
+    background: var(--color-neutral);
+    box-shadow: var(--protruding);
+    border-radius: 20px;
+
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+}
+
+.profile-pic{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    cursor: pointer;
+    background-color: var(--color-neutral);
+    border-radius: 100%;
+    box-shadow: var(--protruding);
+}
+
+input{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 41px;
+    gap: 10px;
+    border: none;
+
+    color: var(--color-black);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-regular);
+
+    width: 124px;
+    height: 24px;
+
+    background: var(--color-neutral);
+    /* Sunken */
+    box-shadow: var(--sunken);
+    border-radius: 50px;
+
+    /* Inside auto layout */
+    flex: none;
+    align-self: stretch;
+    flex-grow: 0;
+}
+
+input::placeholder {
+
+    color: var(--color-neutral-grey);
+    font-family: var(--font-family-base);
+    font-style: normal;
+    font-weight: 400;
+    font-size: var(--font-size-regular);
+}
+
+input:focus {
+    outline: none;
+}
+
+button{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 41px;
+    border: none;
+
+    color: var(--color-black);
+    font-family: var(--font-family-base);
+    font-style: normal;
+    font-weight: 400;
+    font-size: var(--font-size-regular);
+
+    cursor: pointer;
+    height: 40px;
+
+    background: var(--color-neutral);
+    box-shadow: var(--protruding);
+    border-radius: 50px;
+
+    flex: none;
+    align-self: stretch;
+    flex-grow: 0;
+
+    transition: all 0.3s ease-in-out;
+}
+
+button:hover{
+    background: var(--color-primary-100);
+    box-shadow: var(--protruding);
+}
+
+.toggle-text{
+
+    font-family: var(--font-family-base);
+    font-style: normal;
+    font-size: var(--font-size-small);
+    color: var(--color-black);
+}
+
+.toggle-text span{
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--color-primary);
+    font-weight: 600;
+}
