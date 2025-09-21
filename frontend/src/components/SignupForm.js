@@ -14,7 +14,7 @@ function SignupForm({ onSubmit, onToggle }) {
       <input type="text" placeholder="Username" />
             <input type="email" placeholder="Email" />
       <input type="password" placeholder="Password" />
-      <button type="submit">Sign Up</button>
+      <button type="submit" className="confirm-button">Sign Up</button>
 
       <p className="toggle-text">
         Already have an account?

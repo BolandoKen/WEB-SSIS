@@ -13,7 +13,7 @@ function LoginForm({ onSubmit, onToggle }) {
       </div>
       <input type="text" placeholder="Username" />
       <input type="password" placeholder="Password" />
-      <button type="submit">Log in</button>
+      <button type="submit" className="confirm-button">Log in</button>
 
       <p className="toggle-text">
         Don’t have an account?
