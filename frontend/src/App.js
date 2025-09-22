@@ -5,13 +5,12 @@ import AuthenticationPage from "./pages/AuthenticationPage";
 
 function App() {
   const [activePage, setActivePage] = useState("students");
-  /*
+  
   const [user, setUser] = useState(null); // null means not logged in
 
   if (!user) {
-    return <Login onLogin={setUser} />; // show login page first
+    return <AuthenticationPage onLogin={setUser} />; // show login page first
   }
-  */
 
   return (
     <div className="app">

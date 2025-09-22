@@ -11,7 +11,7 @@ function LoginForm({ onSubmit, onToggle }) {
        <div className="signup-header">
         <img src="icons/UserProfile.svg" alt="Logo" className="profile-pic" />
       </div>
-      <input type="text" placeholder="Username" />
+      <input type="email" placeholder="Email" />
       <input type="password" placeholder="Password" />
       <button type="submit" className="confirm-button">Log in</button>
 
