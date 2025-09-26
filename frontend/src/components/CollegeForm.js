@@ -37,7 +37,7 @@ function CollegeForm({ onSubmit, onToggle }) {
                 required
             />
             <div className="button-section">
-                <button type="button" className="confirm-button" onClick={onToggle}>Cancel</button>
+                <button type="button" className="cancel-button" onClick={onToggle}>Cancel</button>
                 <button type="submit" className="confirm-button">Add College</button>
             </div>
         </form>
