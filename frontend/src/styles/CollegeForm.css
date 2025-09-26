@@ -1,0 +1,51 @@
+.college-form{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 20px;
+
+    /* Inside auto layout */
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+}
+.button-section{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 40px;
+
+    /* Inside auto layout */
+    flex: none;
+    order: 2;
+    flex-grow: 0;
+
+}
+.college-input{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 41px;
+    gap: 10px;
+    border: none;
+
+    color: var(--color-black);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-regular);
+
+    width: 124px;
+    height: 24px;
+
+    background: var(--color-neutral);
+    /* Sunken */
+    box-shadow: var(--sunken);
+    border-radius: 50px;
+
+    /* Inside auto layout */
+    flex: none;
+    align-self: stretch;
+    flex-grow: 0;
+}

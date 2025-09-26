@@ -8,3 +8,10 @@ class User(db.Model):
 
     def __repr__(self):
         return f"<User {self.username}>"
+
+class College(db.Model):
+    collegeName = db.Column(db.String(120), primary_key=True)
+    collegeCode = db.Column(db.String(10), unique=True, nullable=False)
+
+    def __repr__(self):
+        return f"<College {self.collegeName}>"

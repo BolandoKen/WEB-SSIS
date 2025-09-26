@@ -20,7 +20,7 @@ function SignupForm({ onSubmit, onToggle }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="signup-form" onSubmit={handleSubmit}>
       <div className="signup-header">
         <img src="icons/UserProfile.svg" alt="Logo" className="profile-pic" />
       </div>
