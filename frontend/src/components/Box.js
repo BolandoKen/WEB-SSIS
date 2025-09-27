@@ -5,6 +5,7 @@ import Dropdown from "./Dropdown";
 import OrderButton from "./OrderButton";
 import PageButton from "./PageButton";
 import CollegeForm from "./CollegeForm";
+import ProgramForm from "./ProgramForm";
 import "../styles/Box.css";
 
 function Box({ activePage, isAdding, onCancel }) {
@@ -57,10 +58,13 @@ return (
           )}
 
           {activePage === "programs" && (
-            <div className="form-placeholder">
-              <p>Program Form goes here</p>
-              <button onClick={onCancel}>Cancel</button>
-            </div>
+            <ProgramForm
+              onSubmit={(data) => {
+                console.log("New program added:", data);
+                onCancel();
+              }}
+              onToggle={onCancel}
+            />
           )}
 
           {activePage === "students" && (
@@ -77,12 +81,14 @@ return (
             <Searchbar />
             <p className="sort-text">Sort by:</p>
 
-            <Dropdown
+            <div className="dropdown-container">  
+              <Dropdown
               label="All"
               options={dropdownOptions}
               onSelect={handleSelect}
             />
-
+            </div>
+            
             <OrderButton
               upIcon="/icons/ArrowUp.svg"
               upHover="/icons/ArrowUpHover.svg"

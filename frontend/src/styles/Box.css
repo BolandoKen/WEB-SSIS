@@ -25,7 +25,10 @@
   order: 0;
   align-self: stretch;
   flex-grow: 0;
+}
 
+.dropdown-container{
+  width: 140px;
 }
 
 .sort-text{
@@ -44,7 +47,6 @@
   flex: 1;
   align-self: stretch;
   flex-grow: 1;
-
 }
 
 .box-button-section{
@@ -60,5 +62,4 @@
   order: 2;
   align-self: stretch;
   flex-grow: 0;
-
 }

@@ -17,7 +17,7 @@ function Dropdown({ label, options, onSelect }) {
         className="dropdown-toggle"
         onClick={() => setIsOpen(!isOpen)}
       >
-        {selected}{" "}
+        <span className="dropdown-label">{selected}</span>
         <img
           src={isOpen ? "/icons/ChevronUp.svg" : "/icons/ChevronDown.svg"}
           alt={isOpen ? "Chevron Up" : "Chevron Down"}

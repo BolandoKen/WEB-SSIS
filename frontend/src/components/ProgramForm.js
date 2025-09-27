@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
+import Dropdown from './Dropdown';
 import '../styles/AddForm.css';
 
-function CollegeForm({ onSubmit, onToggle }) {
+function ProgramForm({ onSubmit, onToggle }) {
     const [formData, setFormData] = useState({
-        collegeName: '',
-        collegeCode: ''
+        programName: '',
+        programCode: ''
     });
     const handleChange = (e) => {
         setFormData({
@@ -21,27 +22,34 @@ function CollegeForm({ onSubmit, onToggle }) {
             <input
                 className='input-field'
                 type="text"
-                name="collegeName"
+                name="programName"
                 placeholder="Name"
-                value={formData.collegeName}
+                value={formData.programName}
                 onChange={handleChange}
                 required
             />
             <input
                 className='input-field'
                 type="text"
-                name="collegeCode"
+                name="programCode"
                 placeholder="Code"
-                value={formData.collegeCode}
+                value={formData.programCode}
                 onChange={handleChange}
                 required
             />
+            <Dropdown
+                className="college-dropdown"
+                label={"College"}
+                options={["College A", "College B", "College C"]}
+                value={formData.college}
+                onChange={handleChange}
+            />
             <div className="button-section">
                 <button type="button" className="cancel-button" onClick={onToggle}>Cancel</button>
-                <button type="submit" className="confirm-button">Add College</button>
+                <button type="submit" className="confirm-button">Add Program</button>
             </div>
         </form>
     );
 }
 
-export default CollegeForm;
+export default ProgramForm;

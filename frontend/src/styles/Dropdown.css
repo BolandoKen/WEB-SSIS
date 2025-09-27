@@ -1,48 +1,57 @@
 .dropdown {
   position: relative;
-  display: inline-block;
+  display: flex;
+  width: auto;
+  
+  align-self: stretch;
 }
 
 .dropdown-toggle {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
-  gap: 10px;
-
-  font-size: var(--font-size-regular);
-  text-align: left;
-
-  width: 140px;
-  cursor: pointer;
-  background-color: var(--color-neutral);
-  color: var(--color-black);
-  box-shadow: var(--protruding);
+  justify-content: space-between; 
+  align-items: center;      
+  width: 100%;                   
+  padding: 10px 20px;             
   border: none;
+  background: var(--color-neutral);
+  cursor: pointer;
+  box-shadow: var(--protruding);
   border-radius: 50px;
-  
+
+  /*button text */
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-regular);
+}
+
+.dropdown-label {
+  text-align: left; 
+  font-family: var(--font-family-base);
 }
 
 .dropdown-menu {
-  padding: 0;
-  margin: 0;
-  list-style: none;
+  flex-direction: column;
   position: absolute;
   top: 110%;
   left: 0;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  list-style: none;
   background-color: var(--color-neutral);
-  width: 140px;
   border-radius: 20px;
   box-shadow: var(--protruding);
   margin-top: 4px;
   z-index: 10;
   overflow: hidden;
+
+  flex: 1;
+  align-self: stretch;
+  flex-grow: 1;
 }
 
 .dropdown-menu li {
   font-family: var(--font-family-base);
-  padding: 10px 20px;
+  padding: 10px 40px;
   cursor: pointer;
 
   transition: all 0.3s ease-in-out;

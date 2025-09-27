@@ -15,3 +15,12 @@ class College(db.Model):
 
     def __repr__(self):
         return f"<College {self.collegeName}>"
+
+class Program(db.Model):
+    programName = db.Column(db.String(120), primary_key=True)
+    programCode = db.Column(db.String(10), unique=True, nullable=False)
+    collegeName = db.Column(db.String(120), db.ForeignKey('college.collegeName'), nullable=False)
+    college = db.relationship('College', backref=db.backref('programs', lazy=True))
+
+    def __repr__(self):
+        return f"<Program {self.programName}>"

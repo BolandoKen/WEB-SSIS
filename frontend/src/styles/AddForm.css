@@ -1,4 +1,4 @@
-.college-form{
+.add-form{
 display: flex;
 flex-direction: column;
 align-items: flex-start;
@@ -30,12 +30,12 @@ flex-grow: 0;
     flex-grow: 0;
 
 }
-.college-input{
+.input-field{
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    padding: 8px 41px;
+    padding: 10px 20px;
     gap: 10px;
     border: none;
 
@@ -54,7 +54,7 @@ flex-grow: 0;
     align-self: stretch;
     flex-grow: 0;
 }
-.college-form button{
+.college-form .cancel-button, .cancel-button{
     display: flex;
     flex-direction: row;
     justify-content: center;
