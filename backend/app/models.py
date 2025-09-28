@@ -24,3 +24,14 @@ class Program(db.Model):
 
     def __repr__(self):
         return f"<Program {self.programName}>"
+    
+class Student(db.Model):
+    Firstname = db.Column(db.String(120), nullable=False)
+    Lastname = db.Column(db.String(120), nullable=False)
+    Gender = db.Column(db.String(10), nullable=False)
+    IdNumber = db.Column(db.String(9), primary_key=True)
+    YearLevel = db.Column(db.String(20), nullable=False)
+    ProgramCode = db.Column(db.String(10), db.ForeignKey('program.programCode'), nullable=False)
+
+    def __repr__(self):
+        return f"<Student {self.Firstname} {self.Lastname}>"

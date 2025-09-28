@@ -5,18 +5,44 @@ align-items: flex-start;
 padding: 0px;
 gap: 40px;
 
-width: 400px;
-height: 200px;
-
-
-flex: none;
-order: 0;
-flex-grow: 0;
-
 }
-.button-section{
+.name-section, .detail-section{
     display: flex;
     flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0px;
+    gap: 20px;
+
+    height: 44px;
+
+    max-width: 473px;
+    /* Inside auto layout */
+    flex: none;
+    align-self: stretch;
+    order: 0; 
+}
+
+#studentName-field{
+    flex-grow: 1;
+}
+
+.detail-section > * {
+  flex: 1;              /* each child takes equal space */
+  min-width: 100px;         /* prevents overflow when shrinking */
+}
+
+#idNumber-field{
+    max-width: 144px;
+}
+
+#gender-dropdown, #yearLevel-dropdown{
+    max-width: 144px;
+}
+
+.dropdown-section{
+    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 0px;
@@ -26,17 +52,32 @@ flex-grow: 0;
     /* Inside auto layout */
     flex: none;
     align-self: stretch;
+    order: 1;
+    flex-grow: 0;
+}
+
+.button-section{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 0px;
+    gap: 40px;
+
+    max-width: 473px;
+    /* Inside auto layout */
+    flex: none;
+    align-self: stretch;
     order: 2;
     flex-grow: 0;
-
 }
+
 .input-field{
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
     padding: 10px 20px;
-    gap: 10px;
     border: none;
 
     color: var(--color-black);
@@ -54,7 +95,7 @@ flex-grow: 0;
     align-self: stretch;
     flex-grow: 0;
 }
-.college-form .cancel-button, .cancel-button{
+.add-form .confirm-button, .cancel-button{
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -68,9 +109,11 @@ flex-grow: 0;
     font-style: normal;
     font-weight: 400;
     font-size: var(--font-size-regular);
+    white-space: nowrap;
 
     cursor: pointer;
     height: 40px;
+
 
     background: var(--color-neutral);
     box-shadow: var(--protruding);
@@ -82,11 +125,12 @@ flex-grow: 0;
 
     transition: all 0.3s ease-in-out;
 }
-.college-form .confirm-button:hover {
+.add-form .confirm-button:hover {
     background: var(--color-primary-100);
     box-shadow: var(--protruding);
 }
-.college-form .cancel-button:hover {
+.add-form .cancel-button:hover {
     background: var(--color-destructive-100);
     box-shadow: var(--protruding);
 }
+

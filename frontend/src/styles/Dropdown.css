@@ -51,8 +51,9 @@
 
 .dropdown-menu li {
   font-family: var(--font-family-base);
-  padding: 10px 40px;
+  padding: 10px 20px;
   cursor: pointer;
+  margin: 0;          /* removes default top/bottom margin */
 
   transition: all 0.3s ease-in-out;
 }

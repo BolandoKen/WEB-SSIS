@@ -38,7 +38,7 @@ function ProgramForm({ onSubmit, onToggle }) {
                 required
             />
             <Dropdown
-                className="college-dropdown"
+                className="form-dropdown"
                 label={"College"}
                 options={["College A", "College B", "College C"]}
                 value={formData.college}
