@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Searchbar from "./Searchbar";
 import Table from "./Table";
 import Dropdown from "./Dropdown";
@@ -10,43 +10,50 @@ import StudentForm from "./StudentForm";
 import "../styles/Box.css";
 
 function Box({ activePage, isAdding, onCancel }) {
+  const [rows, setRows] = useState([]);
   let columns = [];
-  let rows = [];
   let dropdownOptions = [];
+
+  useEffect(() => {
+    if (activePage === "colleges") {
+      fetch("http://127.0.0.1:5000/api/colleges")
+        .then((res) => res.json())
+        .then((data) => {
+          const formatted = data.map((c) => [c.collegeCode, c.collegeName]);
+          setRows(formatted);
+        })
+        .catch((err) => console.error("Error fetching colleges:", err));
+    }
+  }, [activePage]);
 
   switch (activePage) {
     case "students":
       columns = ["ID Number", "Firstname", "Lastname", "Gender", "Year Level", "Program"];
-      rows = [["2023-1864", "Kilmer Douglas Bernardo", "Bolando", "Male", "3", "BSCS"]];
       dropdownOptions = ["All", "Firstname", "Lastname", "Gender", "Year Level", "Program"];
       break;
 
     case "programs":
       columns = ["Code", "Name", "College"];
-      rows = [["BSCS", "Bachelor of Science in Computer Science", "CSS"]];
       dropdownOptions = ["All", "Code", "Name", "College"];
       break;
 
     case "colleges":
       columns = ["Code", "Name"];
-      rows = [["CCS", "College of Computer Studies"]];
       dropdownOptions = ["All", "Code", "Name"];
       break;
 
     default:
-      columns = ["ID Number", "Firstname", "Lastname", "Gender", "Year Level", "Program"];
-      rows = [];
+      columns = [];
       dropdownOptions = ["All"];
   }
 
   const handleSelect = (option) => {
     console.log("Selected:", option);
-    // TODO: apply filtering based on option
   };
 return (
     <div className="box">
       {isAdding ? (
-        // 🔑 Show form instead of table
+
         <>
           {activePage === "colleges" && (
             <CollegeForm
