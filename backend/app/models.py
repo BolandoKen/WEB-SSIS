@@ -22,6 +22,7 @@ class Program(db.Model):
     programCode = db.Column(db.String(10), unique=True, nullable=False)
     programName = db.Column(db.String(120), unique=True, nullable=False)
     college_id = db.Column(db.Integer, db.ForeignKey('college.id'), nullable=False)
+
     college = db.relationship('College', backref=db.backref('programs', lazy=True))
 
     def __repr__(self):
@@ -29,12 +30,13 @@ class Program(db.Model):
 
 class Student(db.Model):
     id = db.Column(db.Integer, primary_key=True)  # Auto-increment ID
-    IdNumber = db.Column(db.String(9), unique=True, nullable=False)
-    Firstname = db.Column(db.String(120), nullable=False)
-    Lastname = db.Column(db.String(120), nullable=False)
-    Gender = db.Column(db.String(10), nullable=False)
-    YearLevel = db.Column(db.String(20), nullable=False)
+    idNumber = db.Column(db.String(9), unique=True, nullable=False)
+    firstname = db.Column(db.String(120), nullable=False)
+    lastname = db.Column(db.String(120), nullable=False)
+    gender = db.Column(db.String(10), nullable=False)
+    yearLevel = db.Column(db.String(20), nullable=False)
     program_id = db.Column(db.Integer, db.ForeignKey('program.id'), nullable=False)
+
     program = db.relationship('Program', backref=db.backref('students', lazy=True))
 
     def __repr__(self):

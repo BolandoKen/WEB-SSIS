@@ -18,9 +18,11 @@ def create_app():
     from .routes.auth import auth_bp
     from .routes.colleges import college_bp
     from .routes.programs import program_bp  
+    from .routes.students import students_bp
 
     app.register_blueprint(auth_bp, url_prefix="/api")
     app.register_blueprint(college_bp, url_prefix="/api")
     app.register_blueprint(program_bp, url_prefix="/api")
+    app.register_blueprint(students_bp, url_prefix="/api")
 
     return app
