@@ -16,6 +16,9 @@ def create_app():
 
     # Import and register blueprints
     from .routes.auth import auth_bp
+    from .routes.colleges import college_bp   # ✅ add this
+
     app.register_blueprint(auth_bp, url_prefix="/api")
+    app.register_blueprint(college_bp, url_prefix="/api")  # ✅ register here
 
     return app
