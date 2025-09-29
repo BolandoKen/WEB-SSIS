@@ -10,28 +10,32 @@ class User(db.Model):
         return f"<User {self.username}>"
 
 class College(db.Model):
-    collegeName = db.Column(db.String(120), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)  # Auto-increment ID
     collegeCode = db.Column(db.String(10), unique=True, nullable=False)
+    collegeName = db.Column(db.String(120), unique=True, nullable=False)
 
     def __repr__(self):
         return f"<College {self.collegeName}>"
 
 class Program(db.Model):
-    programName = db.Column(db.String(120), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)  # Auto-increment ID
     programCode = db.Column(db.String(10), unique=True, nullable=False)
-    collegeName = db.Column(db.String(120), db.ForeignKey('college.collegeName'), nullable=False)
+    programName = db.Column(db.String(120), unique=True, nullable=False)
+    college_id = db.Column(db.Integer, db.ForeignKey('college.id'), nullable=False)
     college = db.relationship('College', backref=db.backref('programs', lazy=True))
 
     def __repr__(self):
         return f"<Program {self.programName}>"
-    
+
 class Student(db.Model):
+    id = db.Column(db.Integer, primary_key=True)  # Auto-increment ID
+    IdNumber = db.Column(db.String(9), unique=True, nullable=False)
     Firstname = db.Column(db.String(120), nullable=False)
     Lastname = db.Column(db.String(120), nullable=False)
     Gender = db.Column(db.String(10), nullable=False)
-    IdNumber = db.Column(db.String(9), primary_key=True)
     YearLevel = db.Column(db.String(20), nullable=False)
-    ProgramCode = db.Column(db.String(10), db.ForeignKey('program.programCode'), nullable=False)
+    program_id = db.Column(db.Integer, db.ForeignKey('program.id'), nullable=False)
+    program = db.relationship('Program', backref=db.backref('students', lazy=True))
 
     def __repr__(self):
         return f"<Student {self.Firstname} {self.Lastname}>"
