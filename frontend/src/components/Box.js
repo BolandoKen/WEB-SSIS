@@ -40,6 +40,22 @@ function Box({ activePage, isAdding, onCancel }) {
         })
         .catch((err) => console.error("Error fetching programs:", err));
     }
+    else if (activePage === "students") {
+      fetch("http://127.0.0.1:5000/api/students")
+        .then((res) => res.json())
+        .then((data) => {
+          const formatted = data.map((s) => [
+            s.idNumber,
+            s.firstname,
+            s.lastname,
+            s.gender,
+            s.yearLevel,
+            s.programCode || "N/A"
+          ]);
+          setRows(formatted);
+        })
+        .catch((err) => console.error("Error fetching students:", err));
+    }
   }, [activePage]);
 
   switch (activePage) {
