@@ -9,5 +9,5 @@ def get_programs():
     return jsonify([{
         "programName": p.programName,
         "programCode": p.programCode,
-        "collegeName": p.collegeName
+        "collegeCode": p.college.collegeCode if p.college else None
     } for p in programs])

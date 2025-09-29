@@ -19,10 +19,26 @@ function Box({ activePage, isAdding, onCancel }) {
       fetch("http://127.0.0.1:5000/api/colleges")
         .then((res) => res.json())
         .then((data) => {
-          const formatted = data.map((c) => [c.collegeCode, c.collegeName]);
+          const formatted = data.map((c) => [
+            c.collegeCode, 
+            c.collegeName
+          ]);
           setRows(formatted);
         })
         .catch((err) => console.error("Error fetching colleges:", err));
+    }
+    else if (activePage === "programs") {
+      fetch("http://127.0.0.1:5000/api/programs")
+        .then((res) => res.json())
+        .then((data) => {
+          const formatted = data.map((p) => [
+            p.programCode, 
+            p.programName, 
+            p.collegeCode || "N/A"
+          ]);
+          setRows(formatted);
+        })
+        .catch((err) => console.error("Error fetching programs:", err));
     }
   }, [activePage]);
 
