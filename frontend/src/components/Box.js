@@ -120,13 +120,45 @@ return (
           {activePage === "programs" && (
             <ProgramForm
               onSubmit={(data) => {
-                console.log("New program added:", data);
-                onCancel();
+                // Transform form data -> backend format
+                const payload = {
+                  programName: data.programName,
+                  programCode: data.programCode,
+                  college_id: data.college_id, // must be an integer id
+                };
+
+                console.log("Submitting payload:", payload);
+
+                fetch("http://127.0.0.1:5000/api/programs", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(payload),
+                })
+                  .then((res) => res.json())
+                  .then((result) => {
+                    console.log("Program created:", result);
+
+                    // Refresh program list
+                    fetch("http://127.0.0.1:5000/api/programs")
+                      .then((res) => res.json())
+                      .then((data) => {
+                        const formatted = data.map((p) => [
+                          p.programCode,
+                          p.programName,
+                          p.collegeCode,
+                        ]);
+                        setRows(formatted);
+                      });
+
+                    onCancel();
+                  })
+                  .catch((err) => console.error("Error creating program:", err));
               }}
               onToggle={onCancel}
             />
           )}
-
           {activePage === "students" && (
             <StudentForm
               onSubmit={(data) => {
