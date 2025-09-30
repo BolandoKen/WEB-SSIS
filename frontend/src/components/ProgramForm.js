@@ -1,26 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Dropdown from './Dropdown';
 import '../styles/AddForm.css';
 
 function ProgramForm({ onSubmit, onToggle }) {
     const [formData, setFormData] = useState({
         programName: '',
-        programCode: ''
+        programCode: '',
+        college: '' // add field for selected college
     });
+
+    const [collegeOptions, setCollegeOptions] = useState([]);
+
+    useEffect(() => {
+        fetch("http://127.0.0.1:5000/api/colleges")
+            .then((res) => res.json())
+            .then((data) => {
+                const options = data.map((c) => ({
+                    value: c.collegeCode,   // backend code
+                    label: c.collegeName    // display name in dropdown
+                }));
+                setCollegeOptions(options);
+            })
+            .catch((err) => console.error("Error fetching colleges:", err));
+    }, []);
+
     const handleChange = (e) => {
         setFormData({
             ...formData,
             [e.target.name]: e.target.value
         });
-    }
+    };
+
+    const handleCollegeChange = (selectedValue) => {
+        setFormData({
+            ...formData,
+            college: selectedValue
+        });
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
         onSubmit(formData); // send actual user input
-    }
+    };
+
     return (
         <form className="add-form" onSubmit={handleSubmit}>
             <input
-                className='input-field'
+                className="input-field"
                 type="text"
                 name="programName"
                 placeholder="Name"
@@ -29,7 +55,7 @@ function ProgramForm({ onSubmit, onToggle }) {
                 required
             />
             <input
-                className='input-field'
+                className="input-field"
                 type="text"
                 name="programCode"
                 placeholder="Code"
@@ -39,10 +65,10 @@ function ProgramForm({ onSubmit, onToggle }) {
             />
             <Dropdown
                 className="form-dropdown"
-                label={"College"}
-                options={["College A", "College B", "College C"]}
+                label="College"
+                options={collegeOptions}
                 value={formData.college}
-                onChange={handleChange}
+                onSelect={handleCollegeChange} 
             />
             <div className="button-section">
                 <button type="button" className="cancel-button" onClick={onToggle}>Cancel</button>

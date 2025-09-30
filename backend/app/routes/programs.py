@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from ..models import Program, db
 
 program_bp = Blueprint("program_bp", __name__)
@@ -11,3 +11,27 @@ def get_programs():
         "programCode": p.programCode,
         "collegeCode": p.college.collegeCode if p.college else None
     } for p in programs])
+
+@program_bp.route("/programs", methods=["POST"])
+def create_program():
+    data = request.get_json()
+
+    program_name = data.get("programName")
+    program_code = data.get("programCode")
+    college_code = data.get("collegeCode")
+
+    if not program_name or not program_code or not college_code:
+        return jsonify({"error": "programName, programCode, and collegeCode are required"}), 400
+
+    new_program = Program(programName=program_name, programCode=program_code, collegeCode=college_code)
+    db.session.add(new_program)
+    db.session.commit()
+
+    return jsonify({
+        "message": "Program created successfully",
+        "program": {
+            "programName": new_program.programName,
+            "programCode": new_program.programCode,
+            "collegeCode": new_program.collegeCode
+        }
+    }), 201
