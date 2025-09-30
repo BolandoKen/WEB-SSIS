@@ -1,23 +1,35 @@
 import React, { useState } from "react";
 import "../styles/Dropdown.css";
 
-function Dropdown({ label, options, onSelect }) {
+function Dropdown({ label, options, value, onSelect }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState(label); // default placeholder text
+
+  const selectedLabel = (() => {
+    if (!value) return label;
+    const found = options.find((opt) =>
+      typeof opt === "object" ? opt.value === value : opt === value
+    );
+    return found
+      ? typeof found === "object"
+        ? found.label
+        : found
+      : label;
+  })();
 
   const handleSelect = (option) => {
-    setSelected(option);   // update placeholder to selected option
-    onSelect(option);      // send value to parent
-    setIsOpen(false);      // close dropdown
+    const val = typeof option === "object" ? option.value : option;
+    onSelect(val);
+    setIsOpen(false);
   };
 
   return (
     <div className="dropdown">
       <button
+        type="button"
         className="dropdown-toggle"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <span className="dropdown-label">{selected}</span>
+        <span className="dropdown-label">{selectedLabel}</span>
         <img
           src={isOpen ? "/icons/ChevronUp.svg" : "/icons/ChevronDown.svg"}
           alt={isOpen ? "Chevron Up" : "Chevron Down"}
@@ -26,11 +38,16 @@ function Dropdown({ label, options, onSelect }) {
 
       {isOpen && (
         <ul className="dropdown-menu">
-          {options.map((option) => (
-            <li key={option} onClick={() => handleSelect(option)}>
-              {option}
-            </li>
-          ))}
+          {options.map((option, index) => {
+            const val = typeof option === "object" ? option.value : option;
+            const display = typeof option === "object" ? option.label : option;
+
+            return (
+              <li key={val || index} onClick={() => handleSelect(option)}>
+                {display}
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>
