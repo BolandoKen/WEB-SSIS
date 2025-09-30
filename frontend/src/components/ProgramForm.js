@@ -6,23 +6,24 @@ function ProgramForm({ onSubmit, onToggle }) {
     const [formData, setFormData] = useState({
         programName: '',
         programCode: '',
-        college: '' // add field for selected college
+        college_id: '' // add field for selected college
     });
 
     const [collegeOptions, setCollegeOptions] = useState([]);
 
     useEffect(() => {
-        fetch("http://127.0.0.1:5000/api/colleges")
-            .then((res) => res.json())
-            .then((data) => {
-                const options = data.map((c) => ({
-                    value: c.collegeCode,   // backend code
-                    label: c.collegeName    // display name in dropdown
-                }));
-                setCollegeOptions(options);
-            })
-            .catch((err) => console.error("Error fetching colleges:", err));
+    fetch("http://127.0.0.1:5000/api/colleges")
+        .then((res) => res.json())
+        .then((data) => {
+            const options = data.map((c) => ({
+                value: c.id,           // now using college ID
+                label: c.collegeName   // display name in dropdown
+            }));
+            setCollegeOptions(options);
+        })
+        .catch((err) => console.error("Error fetching colleges:", err));
     }, []);
+
 
     const handleChange = (e) => {
         setFormData({
@@ -34,9 +35,10 @@ function ProgramForm({ onSubmit, onToggle }) {
     const handleCollegeChange = (selectedValue) => {
         setFormData({
             ...formData,
-            college: selectedValue
+            college_id: parseInt(selectedValue)  // make sure it’s a number
         });
     };
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -67,7 +69,7 @@ function ProgramForm({ onSubmit, onToggle }) {
                 className="form-dropdown"
                 label="College"
                 options={collegeOptions}
-                value={formData.college}
+                value={formData.college_id}
                 onSelect={handleCollegeChange} 
             />
             <div className="button-section">
