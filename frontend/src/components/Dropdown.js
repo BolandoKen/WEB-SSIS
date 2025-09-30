@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../styles/Dropdown.css";
 
-function Dropdown({ label, options, value, onSelect }) {
+function Dropdown({ label, options, value, onSelect, disabled}) {
   const [isOpen, setIsOpen] = useState(false);
 
   const selectedLabel = (() => {
@@ -17,26 +17,34 @@ function Dropdown({ label, options, value, onSelect }) {
   })();
 
   const handleSelect = (option) => {
+    if (disabled) return;
     const val = typeof option === "object" ? option.value : option;
     onSelect(val);
     setIsOpen(false);
   };
 
   return (
-    <div className="dropdown">
+    <div className={`dropdown ${disabled ? "dropdown-disabled" : ""}`}>
       <button
         type="button"
         className="dropdown-toggle"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => !disabled && setIsOpen(!isOpen)}
       >
         <span className="dropdown-label">{selectedLabel}</span>
-        <img
-          src={isOpen ? "/icons/ChevronUp.svg" : "/icons/ChevronDown.svg"}
-          alt={isOpen ? "Chevron Up" : "Chevron Down"}
-        />
+        {disabled ? (
+          <img
+            src="/icons/ChevronDownDisabled.svg"  // your disabled icon
+            alt="Disabled"
+          />
+        ) : (
+          <img
+            src={isOpen ? "/icons/ChevronUp.svg" : "/icons/ChevronDown.svg"}
+            alt={isOpen ? "Chevron Up" : "Chevron Down"}
+          />
+        )}
       </button>
 
-      {isOpen && (
+      {isOpen && !disabled && (
         <ul className="dropdown-menu">
           {options.map((option, index) => {
             const val = typeof option === "object" ? option.value : option;
