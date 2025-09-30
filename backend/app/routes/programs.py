@@ -18,12 +18,16 @@ def create_program():
 
     program_name = data.get("programName")
     program_code = data.get("programCode")
-    college_code = data.get("collegeCode")
+    college_id = data.get("college_id")  # expecting college_id
 
-    if not program_name or not program_code or not college_code:
-        return jsonify({"error": "programName, programCode, and collegeCode are required"}), 400
+    if not program_name or not program_code or not college_id:
+        return jsonify({"error": "programName, programCode, and college_id are required"}), 400
 
-    new_program = Program(programName=program_name, programCode=program_code, collegeCode=college_code)
+    new_program = Program(
+        programName=program_name,
+        programCode=program_code,
+        college_id=college_id
+    )
     db.session.add(new_program)
     db.session.commit()
 
@@ -32,6 +36,7 @@ def create_program():
         "program": {
             "programName": new_program.programName,
             "programCode": new_program.programCode,
-            "collegeCode": new_program.collegeCode
+            "collegeCode": new_program.college.collegeCode  # access via relationship
         }
     }), 201
+
