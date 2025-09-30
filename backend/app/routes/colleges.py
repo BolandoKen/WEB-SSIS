@@ -12,7 +12,6 @@ def get_colleges():
         "collegeCode": c.collegeCode
     } for c in colleges])
 
-
 def create_college():
     data = request.get_json()  
 
