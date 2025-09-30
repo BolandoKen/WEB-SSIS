@@ -24,3 +24,16 @@
   color: var(--color-neutral-grey);
 }
 
+.table-row {
+  cursor: pointer;
+}
+
+.table-row:hover {
+  border: 1px solid var(--color-neutral-grey);
+  box-shadow: 0 2px 6px -2px var(--color-neutral-grey);
+}
+
+.table-row.selected {
+  background-color: var(--color-primary-100);
+}
+

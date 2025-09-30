@@ -164,7 +164,13 @@ return (
           </div>
 
           <div className="box-table-section">
-            <Table columns={columns} rows={rows} />
+            <Table
+              columns={columns}
+              rows={rows}
+              onRowClick={(row, index) => {
+                console.log("Row clicked:", row, "at index", index);
+              }}
+            />
           </div>
 
           <div className="box-button-section">
