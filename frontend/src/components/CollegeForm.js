@@ -16,6 +16,7 @@ function CollegeForm({ onSubmit, onToggle }) {
         e.preventDefault();
         onSubmit(formData); // send actual user input
     }
+    
     return (
         <form className="add-form" onSubmit={handleSubmit}>
             <input

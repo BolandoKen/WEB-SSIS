@@ -85,13 +85,33 @@ function Box({ activePage, isAdding, onCancel }) {
 return (
     <div className="box">
       {isAdding ? (
-
         <>
           {activePage === "colleges" && (
             <CollegeForm
               onSubmit={(data) => {
-                console.log("New college added:", data);
-                onCancel();
+                fetch("http://127.0.0.1:5000/api/colleges", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(data),
+                })
+                  .then((res) => res.json())
+                  .then((result) => {
+                    console.log("College created:", result);
+                    // Refresh the colleges list
+                    fetch("http://127.0.0.1:5000/api/colleges")
+                      .then((res) => res.json())
+                      .then((data) => {
+                        const formatted = data.map((c) => [
+                          c.collegeCode,
+                          c.collegeName
+                        ]);
+                        setRows(formatted);
+                      });
+                    onCancel();
+                  })
+                  .catch((err) => console.error("Error creating college:", err));
               }}
               onToggle={onCancel}
             />
