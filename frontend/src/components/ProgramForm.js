@@ -39,7 +39,6 @@ function ProgramForm({ onSubmit, onToggle }) {
         });
     };
 
-
     const handleSubmit = (e) => {
         e.preventDefault();
         onSubmit(formData); // send actual user input

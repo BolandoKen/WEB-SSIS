@@ -24,7 +24,7 @@ def create_student():
     lastname = data.get("lastname")
     gender = data.get("gender")
     year_level = data.get("yearLevel")
-    program_id = data.get("program_id")  # expecting program_id
+    program_id = data.get("program_id")
 
     if not id_number or not firstname or not lastname:
         return jsonify({"error": "idNumber, firstname, and lastname are required"}), 400
@@ -48,6 +48,6 @@ def create_student():
             "lastname": new_student.lastname,
             "gender": new_student.gender,
             "yearLevel": new_student.yearLevel,
-            "programCode": new_student.programCode
+            "programCode": new_student.program.programCode if new_student.program else None
         }
     }), 201
