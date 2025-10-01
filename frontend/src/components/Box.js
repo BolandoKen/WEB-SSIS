@@ -162,8 +162,47 @@ return (
           {activePage === "students" && (
             <StudentForm
               onSubmit={(data) => {
-                console.log("New student added:", data);
-                onCancel();
+                // Payload must match Flask expected field names
+                const payload = {
+                  idNumber: data.IdNumber,
+                  firstname: data.FirstName,   // lowercase f
+                  lastname: data.LastName,     // lowercase l
+                  gender: data.Gender,
+                  yearLevel: data.YearLevel,
+                  program_id: data.program_id, // must match backend
+                };
+
+                console.log("Submitting student payload:", payload);
+
+                fetch("http://127.0.0.1:5000/api/students", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(payload),
+                })
+                  .then((res) => res.json())
+                  .then((result) => {
+                    console.log("Student created:", result);
+
+                    // Refresh student list
+                    fetch("http://127.0.0.1:5000/api/students")
+                      .then((res) => res.json())
+                      .then((data) => {
+                        const formatted = data.map((s) => [
+                          s.idNumber,
+                          s.firstname,
+                          s.lastname,
+                          s.gender,
+                          s.yearLevel,
+                          s.programCode, // make sure backend sends this correctly
+                        ]);
+                        setRows(formatted);
+                      });
+
+                    onCancel();
+                  })
+                  .catch((err) => console.error("Error creating student:", err));
               }}
               onToggle={onCancel}
             />
