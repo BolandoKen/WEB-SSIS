@@ -1,28 +1,21 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-
-db = SQLAlchemy()
+from app.db import close_db
 
 def create_app():
     app = Flask(__name__)
     CORS(app)
 
-    # Config
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:pointbreak@localhost:5432/webssis'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.teardown_appcontext(close_db)
 
-    db.init_app(app)
+    from app.routes.auth import auth_bp
+    from app.routes.colleges import colleges_bp
+    from app.routes.programs import programs_bp
+    from app.routes.students import students_bp
 
-    # Import and register blueprints
-    from .routes.auth import auth_bp
-    from .routes.colleges import college_bp
-    from .routes.programs import program_bp  
-    from .routes.students import students_bp
-
-    app.register_blueprint(auth_bp, url_prefix="/api")
-    app.register_blueprint(college_bp, url_prefix="/api")
-    app.register_blueprint(program_bp, url_prefix="/api")
-    app.register_blueprint(students_bp, url_prefix="/api")
+    app.register_blueprint(auth_bp)
+    app.register_blueprint(colleges_bp)
+    app.register_blueprint(programs_bp)
+    app.register_blueprint(students_bp)
 
     return app
