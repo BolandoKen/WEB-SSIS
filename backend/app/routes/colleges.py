@@ -1,34 +1,39 @@
 from flask import Blueprint, jsonify, request
-from ..models import College, db
+from app.models import College
 
-college_bp = Blueprint("college_bp", __name__)
+colleges_bp = Blueprint("colleges", __name__, url_prefix="/api/colleges")
 
-@college_bp.route("/colleges", methods=["GET"])
+# GET all colleges
+@colleges_bp.route("/", methods=["GET"])
 def get_colleges():
-    colleges = College.query.all()  
-    return jsonify([{
-        "id": c.id,                 
-        "collegeName": c.collegeName,
-        "collegeCode": c.collegeCode
-    } for c in colleges])
-
-def create_college():
-    data = request.get_json()  
-
-    college_name = data.get("collegeName")
-    college_code = data.get("collegeCode")
-
-    if not college_name or not college_code:
-        return jsonify({"error": "Both collegeName and collegeCode are required"}), 400
-
-    new_college = College(collegeName=college_name, collegeCode=college_code)
-    db.session.add(new_college)
-    db.session.commit()
-
-    return jsonify({
-        "message": "College created successfully",
-        "college": {
-            "collegeName": new_college.collegeName,
-            "collegeCode": new_college.collegeCode
+    colleges = College.all()
+    return jsonify([
+        {
+            "id": c[0],
+            "collegeCode": c[1],
+            "collegeName": c[2]
         }
-    }), 201
+        for c in colleges
+    ])
+
+@colleges_bp.route("", methods=["POST"])
+def create_college():
+    data = request.get_json()
+    collegename = data.get("collegename")
+    collegecode = data.get("collegecode")
+
+    if not collegename or not collegecode:
+        return jsonify({"error": "Both collegename and collegecode are required"}), 400
+
+    try:
+        College.add(collegecode, collegename)
+        return jsonify({"message": "College added successfully"}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+@colleges_bp.route("/<int:college_id>", methods=["DELETE"])
+def delete_college(college_id):
+    if College.delete(college_id):
+        return jsonify({"message": "College deleted successfully"})
+    else:
+        return jsonify({"error": "Failed to delete college"}), 400
