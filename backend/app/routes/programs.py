@@ -1,50 +1,47 @@
-from flask import Blueprint, jsonify, request
-from ..models import Program, db
+from flask import Blueprint, request, jsonify
+from psycopg2.extras import RealDictCursor
+from app.models import Program, get_db
+programs_bp = Blueprint("programs", __name__, url_prefix="/api/programs")
 
-program_bp = Blueprint("program_bp", __name__)
-
-@program_bp.route("/programs", methods=["GET"])
-def get_programs():  
+@programs_bp.route("/", methods=["GET"])
+def get_programs():
     college_id = request.args.get("college_id", type=int)
-    if college_id:
-        programs = Program.query.filter_by(college_id=college_id).all()
-    else:
-        programs = Program.query.all()
+    programs = Program.all(college_id=college_id)
+    return jsonify([dict(p) for p in programs])
 
-    return jsonify([{
-        "id": p.id,
-        "programName": p.programName,
-        "programCode": p.programCode,
-        "collegeCode": p.college.collegeCode if p.college else None
-    } for p in programs])
+@programs_bp.route("/<string:program_code>", methods=["GET"])
+def get_program(program_code):
+    program = Program.get(program_code)
+    if not program:
+        return jsonify({"error": "Program not found"}), 404
+    return jsonify(dict(program))
 
-@program_bp.route("/programs", methods=["POST"])
+@programs_bp.route("", methods=["POST"])
 def create_program():
     data = request.get_json()
 
-    program_name = data.get("programName")
     program_code = data.get("programCode")
-    college_id = data.get("college_id")  
+    program_name = data.get("programName")
+    college_id = data.get("college_id")
 
-    if not program_name or not program_code or not college_id:
-        return jsonify({"error": "programName, programCode, and college_id are required"}), 400
+    if not program_code or not program_name or not college_id:
+        return jsonify({"error": "Missing required fields"}), 400
 
-    new_program = Program(
-        programName=program_name,
-        programCode=program_code,
-        college_id=college_id
-    )
-    db.session.add(new_program)
-    db.session.commit()
+    # Check if program already exists
+    if Program.get(program_code):
+        return jsonify({"error": "Program already exists"}), 400
 
-    return jsonify({
-        "message": "Program created successfully",
-        "program": {
-            "programName": new_program.programName,
-            "programCode": new_program.programCode,
-            "collegeCode": new_program.college.collegeCode  
-        }
-    }), 201
+    # Add program using helper
+    try:
+        Program.add(program_code, program_name, college_id)
+        return jsonify({"message": "Program created successfully"}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
-
-
+@programs_bp.route("/<string:program_code>", methods=["DELETE"])
+def delete_program(program_code):
+    success = Program.delete(program_code)
+    if not success:
+        return jsonify({"error": "Program not found"}), 404
+    
+    return jsonify({"message": "Program deleted successfully"})
