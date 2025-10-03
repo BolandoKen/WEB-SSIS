@@ -14,47 +14,60 @@ function Box({ activePage, isAdding, onCancel }) {
   let columns = [];
   let dropdownOptions = [];
 
-  useEffect(() => {
-    if (activePage === "colleges") {
-      fetch("http://127.0.0.1:5000/api/colleges")
-        .then((res) => res.json())
-        .then((data) => {
-          const formatted = data.map((c) => [
+  const loadcolleges = () => {
+    fetch("http://127.0.0.1:5000/api/colleges")
+    .then((res) => res.json())
+    .then((data) => {
+      const formatted = data.map((c) => [
             c.collegeCode, 
             c.collegeName
-          ]);
-          setRows(formatted);
-        })
-        .catch((err) => console.error("Error fetching colleges:", err));
+      ]);
+      setRows(formatted);
+    })
+    .catch((err) => console.error("Error fetching colleges:", err));
+  };
+
+  const loadPrograms = () => {
+  fetch("http://127.0.0.1:5000/api/programs")
+    .then((res) => res.json())
+    .then((data) => {
+      const formatted = data.map((p) => [
+        p.programcode,
+        p.programname,
+        p.collegecode || "N/A",
+      ]);
+      setRows(formatted);
+    })
+    .catch((err) => console.error("Error fetching programs:", err));
+  };
+
+  const loadStudents = () => {
+    fetch("http://127.0.0.1:5000/api/students")
+      .then((res) => res.json())
+      .then((data) => {
+        const formatted = data.map((s) => [
+          s.idnumber,
+          s.firstname,
+          s.lastname,
+          s.gender,
+          s.yearlevel,
+          s.programcode || "N/A"
+        ]);
+        setRows(formatted);
+      })
+      .catch((err) => console.error("Error fetching students:", err));
+  };
+
+
+  useEffect(() => {
+    if (activePage === "colleges") {
+      loadcolleges();
     }
     else if (activePage === "programs") {
-      fetch("http://127.0.0.1:5000/api/programs")
-        .then((res) => res.json())
-        .then((data) => {
-          const formatted = data.map((p) => [
-            p.programCode, 
-            p.programName, 
-            p.collegeCode || "N/A"
-          ]);
-          setRows(formatted);
-        })
-        .catch((err) => console.error("Error fetching programs:", err));
+      loadPrograms();
     }
     else if (activePage === "students") {
-      fetch("http://127.0.0.1:5000/api/students")
-        .then((res) => res.json())
-        .then((data) => {
-          const formatted = data.map((s) => [
-            s.idNumber,
-            s.firstname,
-            s.lastname,
-            s.gender,
-            s.yearLevel,
-            s.programCode || "N/A"
-          ]);
-          setRows(formatted);
-        })
-        .catch((err) => console.error("Error fetching students:", err));
+      loadStudents();
     }
   }, [activePage]);
 
@@ -82,6 +95,7 @@ function Box({ activePage, isAdding, onCancel }) {
   const handleSelect = (option) => {
     console.log("Selected:", option);
   };
+
 return (
     <div className="box">
       {isAdding ? (
@@ -99,16 +113,7 @@ return (
                   .then((res) => res.json())
                   .then((result) => {
                     console.log("College created:", result);
-                    // Refresh the colleges list
-                    fetch("http://127.0.0.1:5000/api/colleges")
-                      .then((res) => res.json())
-                      .then((data) => {
-                        const formatted = data.map((c) => [
-                          c.collegeCode,
-                          c.collegeName
-                        ]);
-                        setRows(formatted);
-                      });
+                    loadcolleges();
                     onCancel();
                   })
                   .catch((err) => console.error("Error creating college:", err));
@@ -120,11 +125,10 @@ return (
           {activePage === "programs" && (
             <ProgramForm
               onSubmit={(data) => {
-                // Transform form data -> backend format
                 const payload = {
                   programName: data.programName,
                   programCode: data.programCode,
-                  college_id: data.college_id, // must be an integer id
+                  college_id: data.college_id, 
                 };
 
                 console.log("Submitting payload:", payload);
@@ -139,19 +143,7 @@ return (
                   .then((res) => res.json())
                   .then((result) => {
                     console.log("Program created:", result);
-
-                    // Refresh program list
-                    fetch("http://127.0.0.1:5000/api/programs")
-                      .then((res) => res.json())
-                      .then((data) => {
-                        const formatted = data.map((p) => [
-                          p.programCode,
-                          p.programName,
-                          p.collegeCode,
-                        ]);
-                        setRows(formatted);
-                      });
-
+                    loadPrograms();
                     onCancel();
                   })
                   .catch((err) => console.error("Error creating program:", err));
@@ -159,20 +151,20 @@ return (
               onToggle={onCancel}
             />
           )}
+
           {activePage === "students" && (
             <StudentForm
               onSubmit={(data) => {
-                // Payload must match Flask expected field names
                 const payload = {
-                  idNumber: data.IdNumber,
-                  firstname: data.FirstName,   // lowercase f
-                  lastname: data.LastName,     // lowercase l
-                  gender: data.Gender,
-                  yearLevel: data.YearLevel,
-                  program_id: data.program_id, // must match backend
+                  idNumber: data.idNumber,
+                  firstname: data.firstname,   
+                  lastname: data.lastname,    
+                  gender: data.gender,
+                  yearLevel: data.yearLevel,
+                  program_id: data.program_id,
                 };
+                console.log("Submitting student payload:", JSON.stringify(payload, null, 2));
 
-                console.log("Submitting student payload:", payload);
 
                 fetch("http://127.0.0.1:5000/api/students", {
                   method: "POST",
@@ -184,22 +176,7 @@ return (
                   .then((res) => res.json())
                   .then((result) => {
                     console.log("Student created:", result);
-
-                    // Refresh student list
-                    fetch("http://127.0.0.1:5000/api/students")
-                      .then((res) => res.json())
-                      .then((data) => {
-                        const formatted = data.map((s) => [
-                          s.idNumber,
-                          s.firstname,
-                          s.lastname,
-                          s.gender,
-                          s.yearLevel,
-                          s.programCode, // make sure backend sends this correctly
-                        ]);
-                        setRows(formatted);
-                      });
-
+                    loadStudents();
                     onCancel();
                   })
                   .catch((err) => console.error("Error creating student:", err));
@@ -209,7 +186,6 @@ return (
           )}
         </>
       ) : (
-        // 🔑 Normal table view
         <>
           <div className="box-tool-section">
             <Searchbar />
