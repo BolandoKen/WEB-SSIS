@@ -4,11 +4,12 @@ import '../styles/AddForm.css';
 
 function StudentForm({ onSubmit, onToggle }) {
     const [formData, setFormData] = useState({
-        FirstName: '',
-        LastName: '',  // Fixed: was "Lastname"
-        Gender: '',
-        IdNumber: '',
-        YearLevel: '',
+        firstname: '',
+        lastname: '', 
+        gender: '',
+        idNumber: '',
+        yearLevel: '',
+        college_id: '',
         program_id: ''
     });
 
@@ -38,22 +39,19 @@ function StudentForm({ onSubmit, onToggle }) {
     const handleCollegeChange = async (selectedValue) => {
         const collegeId = parseInt(selectedValue);
 
-        // update formData
         setFormData({
             ...formData,
             college_id: collegeId,
-            program_id: '' // reset program selection
+            program_id: ''
         });
 
-        // fetch programs for the selected college
         try {
             const res = await fetch(`http://127.0.0.1:5000/api/programs?college_id=${collegeId}`);
             const data = await res.json();
 
-            // map programs to dropdown format
             const options = data.map((p) => ({
                 value: p.id,
-                label: p.programName
+                label: p.programname
             }));
             setProgramOptions(options);
         } catch (err) {
@@ -81,9 +79,9 @@ function StudentForm({ onSubmit, onToggle }) {
                     className='input-field'
                     id='studentName-field'
                     type="text"
-                    name="FirstName"  // Fixed: was "Firstname"
+                    name="firstname"  
                     placeholder="Firstname"
-                    value={formData.FirstName}  // Fixed: was "Firstname"
+                    value={formData.firstname}  
                     onChange={handleChange}
                     required
                 />
@@ -91,9 +89,9 @@ function StudentForm({ onSubmit, onToggle }) {
                     className='input-field'
                     id="studentName-field"
                     type="text"
-                    name="LastName"  // Fixed: was "Lastname"
+                    name="lastname" 
                     placeholder="Lastname"
-                    value={formData.LastName}  // Fixed: was "Lastname"
+                    value={formData.lastname} 
                     onChange={handleChange}
                     required
                 />
@@ -104,16 +102,16 @@ function StudentForm({ onSubmit, onToggle }) {
                     id="gender-dropdown"
                     label={"Gender"}
                     options={["Male", "Female"]}
-                    value={formData.Gender}
-                    onSelect={(val) => setFormData({ ...formData, Gender: val })}
+                    value={formData.gender}
+                    onSelect={(val) => setFormData({ ...formData, gender: val })}
                 />
                 <input
                     className='input-field'
                     id='idNumber-field'
                     type="text"
-                    name="IdNumber"
+                    name="idNumber"
                     placeholder="0000-0000"
-                    value={formData.IdNumber}
+                    value={formData.idNumber}
                     onChange={handleChange}
                     required
                     maxLength={9}
@@ -123,8 +121,8 @@ function StudentForm({ onSubmit, onToggle }) {
                     id="yearLevel-dropdown"
                     label={"Year Level"}
                     options={["1st Year", "2nd Year", "3rd Year", "4th Year", "4+ Years"]}
-                    value={formData.YearLevel}
-                    onSelect={(val) => setFormData({ ...formData, YearLevel: val })}
+                    value={formData.yearLevel}
+                    onSelect={(val) => setFormData({ ...formData, yearLevel: val })}
                 />
             </div>
             <div className="dropdown-section">
@@ -149,6 +147,5 @@ function StudentForm({ onSubmit, onToggle }) {
             </div>
         </form>
     );
-}
-
+}   
 export default StudentForm;

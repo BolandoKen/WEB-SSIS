@@ -3,8 +3,8 @@ import '../styles/AddForm.css';
 
 function CollegeForm({ onSubmit, onToggle }) {
     const [formData, setFormData] = useState({
-        collegeName: '',
-        collegeCode: ''
+        collegename: '',
+        collegecode: ''
     });
     const handleChange = (e) => {
         setFormData({
@@ -22,18 +22,18 @@ function CollegeForm({ onSubmit, onToggle }) {
             <input
                 className='input-field'
                 type="text"
-                name="collegeName"
+                name="collegename"
                 placeholder="Name"
-                value={formData.collegeName}
+                value={formData.collegename}
                 onChange={handleChange}
                 required
             />
             <input
                 className='input-field'
                 type="text"
-                name="collegeCode"
+                name="collegecode"
                 placeholder="Code"
-                value={formData.collegeCode}
+                value={formData.collegecode}
                 onChange={handleChange}
                 required
             />
