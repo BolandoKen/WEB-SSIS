@@ -6,10 +6,10 @@ import AuthenticationPage from "./pages/AuthenticationPage";
 function App() {
   const [activePage, setActivePage] = useState("students");
   
-  const [user, setUser] = useState(null); // null means not logged in
+  const [user, setUser] = useState(null); 
 
   if (!user) {
-    return <AuthenticationPage onLogin={setUser} />; // show login page first
+    return <AuthenticationPage onLogin={setUser} />; 
   }
 
   return (

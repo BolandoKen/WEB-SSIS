@@ -1,9 +1,12 @@
+import os
 from flask import Flask
 from flask_cors import CORS
 from app.db import close_db
 
 def create_app():
     app = Flask(__name__)
+
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
     CORS(app)
 
     app.teardown_appcontext(close_db)
