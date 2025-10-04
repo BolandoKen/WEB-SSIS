@@ -1,12 +1,19 @@
-from app import create_app
-from app.db import init_db
+from flask import Flask
+import os
+from dotenv import load_dotenv
 
-app = create_app()
+load_dotenv()
+
+app = Flask(__name__)
+
+secret_key = os.getenv("SECRET_KEY")
+if not secret_key:
+    raise RuntimeError("SECRET_KEY is not set. Please add it to your .env file.")
+app.secret_key = secret_key
+
+@app.route("/")
+def home():
+    return "Flask app running with secret key and DB from .env!"
 
 if __name__ == "__main__":
-    # Initialize database tables before running the app
-    with app.app_context():
-        init_db()
-        print("Database tables initialized!")
-    
-    app.run(debug=True)
+    app.run(debug=(os.getenv("FLASK_ENV") == "development"))
