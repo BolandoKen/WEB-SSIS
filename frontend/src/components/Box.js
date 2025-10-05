@@ -9,7 +9,7 @@ import ProgramForm from "./ProgramForm";
 import StudentForm from "./StudentForm";
 import "../styles/Box.css";
 
-function Box({ activePage, isAdding, onCancel }) {
+function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag }) {
   const [rows, setRows] = useState([]);
   let columns = [];
   let dropdownOptions = [];
@@ -19,6 +19,7 @@ function Box({ activePage, isAdding, onCancel }) {
     .then((res) => res.json())
     .then((data) => {
       const formatted = data.map((c) => [
+            c.id,
             c.collegeCode, 
             c.collegeName
       ]);
@@ -32,6 +33,7 @@ function Box({ activePage, isAdding, onCancel }) {
     .then((res) => res.json())
     .then((data) => {
       const formatted = data.map((p) => [
+        p.id,
         p.programcode,
         p.programname,
         p.collegecode || "N/A",
@@ -46,6 +48,7 @@ function Box({ activePage, isAdding, onCancel }) {
       .then((res) => res.json())
       .then((data) => {
         const formatted = data.map((s) => [
+          s.id,
           s.idnumber,
           s.firstname,
           s.lastname,
@@ -69,7 +72,7 @@ function Box({ activePage, isAdding, onCancel }) {
     else if (activePage === "students") {
       loadStudents();
     }
-  }, [activePage]);
+  }, [activePage, reloadFlag]);
 
   switch (activePage) {
     case "students":
@@ -216,6 +219,7 @@ return (
               rows={rows}
               onRowClick={(row, index) => {
                 console.log("Row clicked:", row, "at index", index);
+                onRowSelect(row);
               }}
             />
           </div>
