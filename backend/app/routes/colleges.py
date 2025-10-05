@@ -31,8 +31,14 @@ def create_college():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-@colleges_bp.route("/<int:college_id>", methods=["DELETE"])
-def delete_college(college_id):
+@colleges_bp.route("", methods=["DELETE"])
+def delete_college():
+    # Get the id from query params
+    college_id = request.args.get("id", type=int)
+    
+    if not college_id:
+        return jsonify({"error": "College ID is required"}), 400
+
     if College.delete(college_id):
         return jsonify({"message": "College deleted successfully"})
     else:

@@ -119,7 +119,7 @@ class Student:
         db = get_db()
         cursor = db.cursor(cursor_factory=RealDictCursor)
         cursor.execute("""
-            SELECT s.idNumber, s.firstname, s.lastname, s.gender, s.yearLevel, p.programCode
+            SELECT s.id, s.idNumber, s.firstname, s.lastname, s.gender, s.yearLevel, p.programCode
             FROM students s
             JOIN programs p ON s.program_id = p.id
         """)
