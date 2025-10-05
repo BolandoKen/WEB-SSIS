@@ -1,18 +1,19 @@
 import React, { useState } from "react";
 import "../styles/IconButton.css";
 
-function IconButton({ href = "#", icon, hoverIcon }) {
+function IconButton({icon, hoverIcon, onClick}) {
   const [currentIcon, setCurrentIcon] = useState(icon);
 
   return (
-    <a
-      href={href}
+    <button
+      type="button"
       className="icon-button"
+      onClick={onClick}
       onMouseEnter={() => hoverIcon && setCurrentIcon(hoverIcon)}
       onMouseLeave={() => setCurrentIcon(icon)}
     >
       {icon && <img src={currentIcon} alt="icon" className="btn-icon" />}
-    </a>
+    </button>
   );
 }
 

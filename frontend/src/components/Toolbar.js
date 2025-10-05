@@ -2,14 +2,60 @@ import React from "react";
 import "../styles/Toolbar.css";
 import IconButton from "./IconButton";
 
-function Toolbar({ title, showIconButtons = true }) {
+function Toolbar({ title, showIconButtons = true, selectedRow, activePage, onDeleteSuccess }) {
+  const handleDelete = async () => {
+    if (!selectedRow) return;
+
+    const id = selectedRow[0]; // integer ID
+    let endpoint = "";
+
+    switch (activePage) {
+      case "colleges":
+        endpoint = "/api/colleges";
+        break;
+      case "programs":
+        endpoint = "/api/programs";
+        break;
+      case "students":
+        endpoint = "/api/students";
+        break;
+      default:
+        console.error("Unknown page:", activePage);
+        return;
+    }
+
+  try {
+      const res = await fetch(`http://127.0.0.1:5000${endpoint}?id=${id}`, {
+          method: "DELETE",
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        console.log(data.message || "Deleted successfully");
+        if (onDeleteSuccess) onDeleteSuccess(id);
+      } else {
+        console.error(data.error || "Delete failed");
+      }
+    } catch (err) {
+      console.error("Error deleting:", err);
+    }
+  };
+
   return (
     <div className="toolbar">
       <p className="title">{title}</p>
       {showIconButtons && (
         <div className="toolbar-actions">
-          <IconButton href="#" icon="/icons/Edit.svg" hoverIcon="/icons/EditHover.svg" />
-          <IconButton href="#" icon="/icons/Trash.svg" hoverIcon="/icons/TrashHover.svg" />
+          <IconButton 
+            icon="/icons/Edit.svg" 
+            hoverIcon="/icons/EditHover.svg" 
+          />
+          <IconButton 
+            icon="/icons/Trash.svg" 
+            hoverIcon="/icons/TrashHover.svg" 
+            onClick={handleDelete}
+          />
         </div>
       )}
     </div>
