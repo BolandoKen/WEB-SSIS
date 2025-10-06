@@ -38,10 +38,14 @@ def create_program():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-@programs_bp.route("/<string:program_code>", methods=["DELETE"])
-def delete_program(program_code):
-    success = Program.delete(program_code)
-    if not success:
-        return jsonify({"error": "Program not found"}), 404
-    
-    return jsonify({"message": "Program deleted successfully"})
+@programs_bp.route("", methods=["DELETE"])
+def delete_program():
+    program_id = request.args.get("id", type=int)
+
+    if not program_id:
+        return jsonify({"error": "Program ID is required"}), 400
+
+    if Program.delete(program_id):
+        return jsonify({"message": "Program deleted successfully"})
+    else:
+        return jsonify({"error": "Failed to delete program"}), 400

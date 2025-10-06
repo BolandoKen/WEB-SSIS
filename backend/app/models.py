@@ -51,14 +51,16 @@ class Program:
         
         if college_id:
             cursor.execute("""
-                SELECT p.id, p.programCode, p.programName, p.college_id
+                SELECT p.id, p.programCode, p.programName, p.college_id, c.collegeCode
                 FROM programs p
+                LEFT JOIN colleges c ON p.college_id = c.id
                 WHERE p.college_id = %s
             """, (college_id,))
         else:
             cursor.execute("""
-                SELECT p.id, p.programCode, p.programName, p.college_id
+                SELECT p.id, p.programCode, p.programName, p.college_id, c.collegeCode
                 FROM programs p
+                LEFT JOIN colleges c ON p.college_id = c.id
             """)
         
         programs = cursor.fetchall()
@@ -99,11 +101,11 @@ class Program:
             raise e
         
     @staticmethod
-    def delete(program_code):
+    def delete(program_id):
         db = get_db()
         cursor = db.cursor()
         try:
-            cursor.execute("DELETE FROM programs WHERE programCode = %s", (program_code,))
+            cursor.execute("DELETE FROM programs WHERE id = %s", (program_id,))
             db.commit()
             deleted = cursor.rowcount > 0
             cursor.close()
