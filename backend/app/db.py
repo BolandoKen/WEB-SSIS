@@ -32,42 +32,36 @@ def init_db():
     # Create tables if they don't exist
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY,
+        id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
         username VARCHAR(80) UNIQUE NOT NULL,
         email VARCHAR(120) UNIQUE NOT NULL,
         password_hash VARCHAR(512) NOT NULL
     );
-    """)
 
-    cursor.execute("""
     CREATE TABLE IF NOT EXISTS colleges (
-        id SERIAL PRIMARY KEY,
+        id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
         collegeCode VARCHAR(10) UNIQUE NOT NULL,
         collegeName VARCHAR(120) UNIQUE NOT NULL
     );
-    """)
 
-    cursor.execute("""
     CREATE TABLE IF NOT EXISTS programs (
-        id SERIAL PRIMARY KEY,
+        id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
         programCode VARCHAR(10) UNIQUE NOT NULL,
         programName VARCHAR(120) UNIQUE NOT NULL,
-        college_id INT REFERENCES colleges(id) ON DELETE CASCADE
+        college_id INT REFERENCES colleges(id) ON DELETE SET NULL
     );
-    """)
 
-    cursor.execute("""
     CREATE TABLE IF NOT EXISTS students (
-        id SERIAL PRIMARY KEY,
+        id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
         idNumber VARCHAR(9) UNIQUE NOT NULL,
         firstname VARCHAR(120) NOT NULL,
         lastname VARCHAR(120) NOT NULL,
         gender VARCHAR(10) NOT NULL,
         yearLevel VARCHAR(20) NOT NULL,
-        program_id INT REFERENCES programs(id) ON DELETE CASCADE
+        program_id INT REFERENCES programs(id) ON DELETE SET NULL
     );
+
     """)
 
     db.commit()
     cursor.close()
-
