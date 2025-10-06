@@ -36,9 +36,12 @@ def create_student():
         return jsonify({"error": "Failed to create student"}), 400
     return jsonify({"message": "Student created successfully"}), 201
 
-@students_bp.route("/<string:id_number>", methods=["DELETE"])
-def delete_student(id_number):
-    success = Student.delete(id_number)
-    if not success:
-        return jsonify({"error": "Student not found"}), 404
-    return jsonify({"message": "Student deleted successfully"})
+
+@students_bp.route("", methods=["DELETE"])
+def delete_student():
+    student_id = request.args.get("id", type=int)
+    
+    if Student.delete(student_id):
+        return jsonify({"message": "Student deleted successfully"})
+    else:
+        return jsonify({"error": "Failed to delete student"}), 400

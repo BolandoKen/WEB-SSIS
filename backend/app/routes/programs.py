@@ -42,9 +42,6 @@ def create_program():
 def delete_program():
     program_id = request.args.get("id", type=int)
 
-    if not program_id:
-        return jsonify({"error": "Program ID is required"}), 400
-
     if Program.delete(program_id):
         return jsonify({"message": "Program deleted successfully"})
     else:

@@ -36,9 +36,6 @@ def delete_college():
     # Get the id from query params
     college_id = request.args.get("id", type=int)
     
-    if not college_id:
-        return jsonify({"error": "College ID is required"}), 400
-
     if College.delete(college_id):
         return jsonify({"message": "College deleted successfully"})
     else:

@@ -162,11 +162,11 @@ class Student:
             raise e
     
     @staticmethod
-    def delete(id_number):
+    def delete(id):
         db = get_db()
         cursor = db.cursor()
         try:
-            cursor.execute("DELETE FROM students WHERE idNumber = %s", (id_number,))
+            cursor.execute("DELETE FROM students WHERE id = %s", (id,))
             db.commit()
             deleted = cursor.rowcount > 0
             cursor.close()
