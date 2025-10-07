@@ -46,3 +46,20 @@ def delete_program():
         return jsonify({"message": "Program deleted successfully"})
     else:
         return jsonify({"error": "Failed to delete program"}), 400
+    
+@programs_bp.route("", methods=["PUT"])
+def update_program():
+    program_id = request.args.get("id", type=int)
+
+    data = request.get_json()
+    program_code = data.get("programCode")
+    program_name = data.get("programName")
+    college_id = data.get("college_id")
+
+    if not program_code or not program_name or not college_id:
+        return jsonify({"error": "Missing fields"}), 400
+
+    if Program.update(program_id, program_code, program_name, college_id):
+        return jsonify({"message": "Program updated successfully"})
+    else:
+        return jsonify({"error": "Failed to update program"}), 400

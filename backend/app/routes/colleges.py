@@ -3,7 +3,6 @@ from app.models import College
 
 colleges_bp = Blueprint("colleges", __name__, url_prefix="/api/colleges")
 
-# GET all colleges
 @colleges_bp.route("/", methods=["GET"])
 def get_colleges():
     colleges = College.all()
@@ -33,7 +32,6 @@ def create_college():
 
 @colleges_bp.route("", methods=["DELETE"])
 def delete_college():
-    # Get the id from query params
     college_id = request.args.get("id", type=int)
     
     if College.delete(college_id):
@@ -43,14 +41,9 @@ def delete_college():
     
 @colleges_bp.route("", methods=["PUT"])
 def update_college():
-    # Get the id from query params
     college_id = request.args.get("id", type=int)
-    if not college_id:
-        return jsonify({"error": "Missing college ID"}), 400
 
-    data = request.get_json(force=True)
-    print("\n🟢 Received PUT request data:", data, "\n")
-
+    data = request.get_json()
     college_code = data.get("collegecode")
     college_name = data.get("collegename")
 

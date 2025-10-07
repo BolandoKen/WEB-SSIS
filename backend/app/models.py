@@ -135,6 +135,26 @@ class Program:
             cursor.close()
             return False
         
+    @staticmethod
+    def update(program_id, program_code, program_name, college_id):
+        db = get_db()
+        cursor = db.cursor()
+        try:
+            cursor.execute("""
+                UPDATE programs
+                SET programCode = %s, programName = %s, college_id = %s
+                WHERE id = %s
+            """, (program_code, program_name, college_id, program_id))
+            db.commit()
+            updated = cursor.rowcount > 0
+            cursor.close()
+            return updated
+        except Exception as e:
+            db.rollback()
+            cursor.close()
+            print("Error updating program:", e)
+            return False
+
 class Student:
     @staticmethod
     def all():
@@ -194,4 +214,24 @@ class Student:
         except Exception as e:
             db.rollback()
             cursor.close()
+            return False
+        
+    @staticmethod
+    def update(student_id, idNumber, firstname, lastname, gender, yearLevel, program_id):
+        db = get_db()
+        cursor = db.cursor()
+        try:
+            cursor.execute("""
+                UPDATE students
+                SET idNumber = %s, firstname = %s, lastname = %s, gender = %s, yearLevel = %s, program_id = %s
+                WHERE id = %s
+            """, (idNumber, firstname, lastname, gender, yearLevel, program_id, student_id))
+            db.commit()
+            updated = cursor.rowcount > 0
+            cursor.close()
+            return updated
+        except Exception as e:
+            db.rollback()
+            cursor.close()
+            print("Error updating student:", e)
             return False
