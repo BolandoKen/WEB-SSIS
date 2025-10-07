@@ -2,7 +2,14 @@ import React from "react";
 import "../styles/Toolbar.css";
 import IconButton from "./IconButton";
 
-function Toolbar({ title, showIconButtons = true, selectedRow, activePage, onDeleteSuccess }) {
+function Toolbar({ 
+  title, 
+  showIconButtons = true, 
+  selectedRow, 
+  activePage, 
+  onDeleteSuccess, 
+  onEdit // 👈 new prop
+}) {
   const handleDelete = async () => {
     if (!selectedRow) return;
 
@@ -24,9 +31,9 @@ function Toolbar({ title, showIconButtons = true, selectedRow, activePage, onDel
         return;
     }
 
-  try {
+    try {
       const res = await fetch(`http://127.0.0.1:5000${endpoint}?id=${id}`, {
-          method: "DELETE",
+        method: "DELETE",
       });
 
       const data = await res.json();
@@ -47,13 +54,20 @@ function Toolbar({ title, showIconButtons = true, selectedRow, activePage, onDel
       <p className="title">{title}</p>
       {showIconButtons && (
         <div className="toolbar-actions">
-          <IconButton 
-            icon="/icons/Edit.svg" 
-            hoverIcon="/icons/EditHover.svg" 
+          <IconButton
+            icon="/icons/Edit.svg"
+            hoverIcon="/icons/EditHover.svg"
+            onClick={() => {
+              if (!selectedRow) {
+                console.warn("⚠️ No row selected to edit");
+                return;
+              }
+              onEdit?.(selectedRow);
+            }}
           />
-          <IconButton 
-            icon="/icons/Trash.svg" 
-            hoverIcon="/icons/TrashHover.svg" 
+          <IconButton
+            icon="/icons/Trash.svg"
+            hoverIcon="/icons/TrashHover.svg"
             onClick={handleDelete}
           />
         </div>
@@ -61,4 +75,5 @@ function Toolbar({ title, showIconButtons = true, selectedRow, activePage, onDel
     </div>
   );
 }
+
 export default Toolbar;

@@ -3,7 +3,7 @@ import "../styles/ToolbarContainer.css";
 import Toolbar from "./Toolbar";
 import AddButton from "./AddButton";
 
-function ToolbarContainer({ title, isAdding, onAddClick, onReturnClick, selectedRow , activePage, onDeleteSuccess}) {
+function ToolbarContainer({ title, isAdding, onAddClick, onReturnClick, selectedRow , activePage, onDeleteSuccess, onEdit }) {
   return (
     <div className="toolbar-container">
       <Toolbar 
@@ -12,6 +12,7 @@ function ToolbarContainer({ title, isAdding, onAddClick, onReturnClick, selected
         selectedRow={selectedRow}
         activePage={activePage}
         onDeleteSuccess={onDeleteSuccess}
+        onEdit={onEdit}
       />
     
       {!isAdding && (

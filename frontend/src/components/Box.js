@@ -9,7 +9,7 @@ import ProgramForm from "./ProgramForm";
 import StudentForm from "./StudentForm";
 import "../styles/Box.css";
 
-function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag }) {
+function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag, selectedRow, editCollege, clearEdit }) {
   const [rows, setRows] = useState([]);
   let columns = [];
   let dropdownOptions = [];
@@ -105,25 +105,37 @@ return (
         <>
           {activePage === "colleges" && (
             <CollegeForm
+              selectedCollege={editCollege} 
               onSubmit={(data) => {
-                fetch("http://127.0.0.1:5000/api/colleges", {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
+                const isEditing = !!editCollege; 
+                const endpoint = isEditing
+                  ? `http://127.0.0.1:5000/api/colleges?id=${editCollege.id}`
+                  : "http://127.0.0.1:5000/api/colleges";
+
+                const method = isEditing ? "PUT" : "POST"
+
+                fetch(endpoint, {
+                  method,
+                  headers: { "Content-Type": "application/json" },
                   body: JSON.stringify(data),
                 })
                   .then((res) => res.json())
                   .then((result) => {
-                    console.log("College created:", result);
+                    console.log(isEditing ? "College updated:" : "College created:", result);
                     loadcolleges();
                     onCancel();
+                    clearEdit?.();
+
+                    if (onRowSelect) onRowSelect(null);
                   })
-                  .catch((err) => console.error("Error creating college:", err));
+                  .catch((err) =>
+                    console.error(isEditing ? "Error updating college:" : "Error creating college:", err)
+                  );
               }}
               onToggle={onCancel}
             />
           )}
+
 
           {activePage === "programs" && (
             <ProgramForm
@@ -217,14 +229,19 @@ return (
             <Table
               columns={columns}
               rows={rows}
+              selectedRow={selectedRow}
               onRowClick={(row, index) => {
-                console.log("Row clicked:", row, "at index", index);
                 onRowSelect(row);
               }}
             />
           </div>
 
           <div className="box-button-section">
+            {selectedRow && (
+              <div style={{ marginTop: "10px", color: "#aaa" }}>
+                <strong>Selected Row:</strong> {JSON.stringify(selectedRow)}
+              </div>
+            )}
             <PageButton
               href="#"
               icon="/icons/ChevronLeft.svg"
