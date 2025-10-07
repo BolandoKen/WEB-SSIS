@@ -36,12 +36,32 @@ def create_student():
         return jsonify({"error": "Failed to create student"}), 400
     return jsonify({"message": "Student created successfully"}), 201
 
-
 @students_bp.route("", methods=["DELETE"])
 def delete_student():
+
     student_id = request.args.get("id", type=int)
     
     if Student.delete(student_id):
         return jsonify({"message": "Student deleted successfully"})
     else:
         return jsonify({"error": "Failed to delete student"}), 400
+    
+@students_bp.route("", methods=["PUT"])
+def update_student():
+    student_id = request.args.get("id", type=int)
+
+    data = request.get_json()
+    idNumber = data.get("idNumber")
+    firstname = data.get("firstname")
+    lastname = data.get("lastname")
+    gender = data.get("gender")
+    yearLevel = data.get("yearLevel")
+    program_id = data.get("program_id")
+
+    if not idNumber or not firstname or not lastname or not gender or not yearLevel or not program_id:
+        return jsonify({"error": "Missing required fields"}), 400
+
+    if Student.update(student_id, idNumber, firstname, lastname, gender, yearLevel, program_id):
+        return jsonify({"message": "Student updated successfully"}), 200
+    else:
+        return jsonify({"error": "Failed to update student"}), 400
