@@ -42,7 +42,27 @@ class College:
             db.rollback()
             cursor.close()
             return False
-        
+    
+    @staticmethod
+    def update(college_id, college_code, college_name):
+        db = get_db()
+        cursor = db.cursor()
+        try:
+            cursor.execute("""
+                UPDATE colleges
+                SET collegeCode = %s, collegeName = %s
+                WHERE id = %s
+            """, (college_code, college_name, college_id))
+            db.commit()
+            updated = cursor.rowcount > 0
+            cursor.close()
+            return updated
+        except Exception as e:
+            db.rollback()
+            cursor.close()
+            print("Error updating college:", e)
+            return False
+
 class Program:
     @staticmethod
     def all(college_id=None):

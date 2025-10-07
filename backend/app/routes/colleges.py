@@ -40,3 +40,24 @@ def delete_college():
         return jsonify({"message": "College deleted successfully"})
     else:
         return jsonify({"error": "Failed to delete college"}), 400
+    
+@colleges_bp.route("", methods=["PUT"])
+def update_college():
+    # Get the id from query params
+    college_id = request.args.get("id", type=int)
+    if not college_id:
+        return jsonify({"error": "Missing college ID"}), 400
+
+    data = request.get_json(force=True)
+    print("\n🟢 Received PUT request data:", data, "\n")
+
+    college_code = data.get("collegecode")
+    college_name = data.get("collegename")
+
+    if not college_code or not college_name:
+        return jsonify({"error": "Missing fields"}), 400
+
+    if College.update(college_id, college_code, college_name):
+        return jsonify({"message": "College updated successfully"})
+    else:
+        return jsonify({"error": "Failed to update college"}), 400
