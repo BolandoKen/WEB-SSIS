@@ -33,7 +33,7 @@ function Dropdown({ label, options, value, onSelect, disabled}) {
         <span className="dropdown-label">{selectedLabel}</span>
         {disabled ? (
           <img
-            src="/icons/ChevronDownDisabled.svg"  // your disabled icon
+            src="/icons/ChevronDownDisabled.svg"
             alt="Disabled"
           />
         ) : (

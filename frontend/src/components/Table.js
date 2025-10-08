@@ -37,11 +37,8 @@ function Table({ columns, rows, onRowClick }) {
             }`}
             onClick={() => handleRowClick(row, rowIndex)}
           >
-            {row.slice(1).map((cell, cellIndex) => (
-              <td
-                key={cellIndex}
-                className="table-cell"
-              >
+            {row.slice(1, columns.length + 1).map((cell, cellIndex) => (
+              <td key={cellIndex} className="table-cell">
                 {cell}
               </td>
             ))}

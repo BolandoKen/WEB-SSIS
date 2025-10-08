@@ -71,14 +71,14 @@ class Program:
         
         if college_id:
             cursor.execute("""
-                SELECT p.id, p.programCode, p.programName, p.college_id, c.collegeCode
+                SELECT p.id, p.programCode, p.programName, p.college_id, c.collegeCode, c.collegeName
                 FROM programs p
                 LEFT JOIN colleges c ON p.college_id = c.id
                 WHERE p.college_id = %s
             """, (college_id,))
         else:
             cursor.execute("""
-                SELECT p.id, p.programCode, p.programName, p.college_id, c.collegeCode
+                SELECT p.id, p.programCode, p.programName, p.college_id, c.collegeCode, c.collegeName
                 FROM programs p
                 LEFT JOIN colleges c ON p.college_id = c.id
             """)

@@ -9,7 +9,7 @@ import ProgramForm from "./ProgramForm";
 import StudentForm from "./StudentForm";
 import "../styles/Box.css";
 
-function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag, selectedRow, editCollege, clearEdit }) {
+function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag, selectedRow, editCollege, editProgram, clearEdit }) {
   const [rows, setRows] = useState([]);
   let columns = [];
   let dropdownOptions = [];
@@ -33,15 +33,18 @@ function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag, selected
     .then((res) => res.json())
     .then((data) => {
       const formatted = data.map((p) => [
-        p.id,
-        p.programcode,
-        p.programname,
-        p.collegecode || "N/A",
+        p.id,            
+        p.programcode,   
+        p.programname,   
+        p.collegecode,   
+        p.collegename,   
+        p.college_id     
       ]);
       setRows(formatted);
     })
     .catch((err) => console.error("Error fetching programs:", err));
   };
+
 
   const loadStudents = () => {
     fetch("http://127.0.0.1:5000/api/students")
@@ -135,33 +138,34 @@ return (
               onToggle={onCancel}
             />
           )}
-
-
           {activePage === "programs" && (
             <ProgramForm
+              isEditing={!!editProgram}
+              selectedProgram={editProgram}
               onSubmit={(data) => {
-                const payload = {
-                  programName: data.programName,
-                  programCode: data.programCode,
-                  college_id: data.college_id, 
-                };
+                const isEditing = !!editProgram;
+                const endpoint = isEditing
+                  ? `http://127.0.0.1:5000/api/programs?id=${editProgram.id}`
+                  : "http://127.0.0.1:5000/api/programs";
 
-                console.log("Submitting payload:", payload);
+                const method = isEditing ? "PUT" : "POST";
 
-                fetch("http://127.0.0.1:5000/api/programs", {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify(payload),
+                fetch(endpoint, {
+                  method,
+                  headers: {"Content-Type": "application/json",},
+                  body: JSON.stringify(data),
                 })
                   .then((res) => res.json())
                   .then((result) => {
-                    console.log("Program created:", result);
+                    console.log(isEditing ? "Program updated:" : "Program created:", result);
                     loadPrograms();
                     onCancel();
+                    clearEdit?.();
+
+                    if (onRowSelect) onRowSelect(null);
                   })
-                  .catch((err) => console.error("Error creating program:", err));
+                  .catch((err) => 
+                    console.error(isEditing ? "Error updating program:" : "Error creating program:", err));
               }}
               onToggle={onCancel}
             />

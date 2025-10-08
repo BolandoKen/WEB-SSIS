@@ -7,7 +7,6 @@ function CollegeForm({ onSubmit, onToggle, selectedCollege }) {
     collegecode: ''
   });
 
-  // Update form when editing an existing college
   useEffect(() => {
     if (selectedCollege) {
       setFormData({

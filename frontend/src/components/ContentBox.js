@@ -9,22 +9,39 @@ function ContentBox({ activePage }) {
   const [isAdding, setIsAdding] = useState(false);
   const [reloadFlag, setReloadFlag] = useState(false);
   const [editCollege, setEditCollege] = useState(null); // new state for editing
+  const [editProgram, setEditProgram] = useState(null);
+
 
   const handleEdit = (rowData) => {
   if (!rowData) {
     console.warn("⚠️ No row selected to edit");
     return;
   }
+  if (activePage === "colleges") {
+    const [id, collegecode, collegename] = rowData;
+    setEditCollege({ id, collegename, collegecode });
+  }
+  else if (activePage === "programs") {
+  const [id, programcode, programname, collegecode, collegename, college_id] = rowData;
 
-  const [id, collegecode, collegename] = rowData;
-  setEditCollege({ id, collegename, collegecode });
+  setEditProgram({
+    id,
+    programcode,
+    programname,
+    collegecode,
+    collegename,
+    college_id
+  });
+}
+
   setIsAdding(true);
 };
 
   const handleReturn = () => {
   setIsAdding(false);
-  setEditCollege(null); 
-  setSelectedRow(null);  
+  setEditCollege(null);
+  setEditProgram(null);
+  setSelectedRow(null);
 };
 
 const handleDeleteSuccess = (id) => {
@@ -55,7 +72,11 @@ const handleDeleteSuccess = (id) => {
         reloadFlag={reloadFlag}
         selectedRow={selectedRow}
         editCollege={editCollege} 
-        clearEdit={() => setEditCollege(null)}
+        editProgram={editProgram}
+        clearEdit={() => {
+          setEditCollege(null);
+          setEditProgram(null);
+        }}
       />
     </div>
   );
