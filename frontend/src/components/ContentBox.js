@@ -10,37 +10,52 @@ function ContentBox({ activePage }) {
   const [reloadFlag, setReloadFlag] = useState(false);
   const [editCollege, setEditCollege] = useState(null); // new state for editing
   const [editProgram, setEditProgram] = useState(null);
+  const [editStudent, setEditStudent] = useState(null);
 
 
   const handleEdit = (rowData) => {
-  if (!rowData) {
-    console.warn("⚠️ No row selected to edit");
-    return;
-  }
-  if (activePage === "colleges") {
-    const [id, collegecode, collegename] = rowData;
-    setEditCollege({ id, collegename, collegecode });
-  }
-  else if (activePage === "programs") {
-  const [id, programcode, programname, collegecode, collegename, college_id] = rowData;
-
-  setEditProgram({
-    id,
-    programcode,
-    programname,
-    collegecode,
-    collegename,
-    college_id
-  });
-}
-
-  setIsAdding(true);
-};
+    if (!rowData) {
+      console.warn("⚠️ No row selected to edit");
+      return;
+    }
+    if (activePage === "colleges") {
+      const [id, collegecode, collegename] = rowData;
+      setEditCollege({ id, collegename, collegecode });
+    } else if (activePage === "programs") {
+      const [id, programcode, programname, collegecode, collegename, college_id] = rowData;
+      setEditProgram({
+        id,
+        programcode,
+        programname,
+        collegecode,
+        collegename,
+        college_id
+      });
+    } else if (activePage === "students") {
+      const [id, idnumber, firstname, lastname, gender, yearlevel, programcode, programname, collegecode, collegename, program_id, college_id] = rowData;
+      setEditStudent({
+        id,
+        idnumber,
+        firstname,
+        lastname,
+        gender,
+        yearlevel,
+        programcode,
+        programname,
+        collegecode,
+        collegename,
+        program_id,
+        college_id
+      });
+    }
+    setIsAdding(true);
+  };
 
   const handleReturn = () => {
   setIsAdding(false);
   setEditCollege(null);
   setEditProgram(null);
+  setEditStudent(null);
   setSelectedRow(null);
 };
 
@@ -73,9 +88,11 @@ const handleDeleteSuccess = (id) => {
         selectedRow={selectedRow}
         editCollege={editCollege} 
         editProgram={editProgram}
+        editStudent={editStudent}
         clearEdit={() => {
           setEditCollege(null);
           setEditProgram(null);
+          setEditStudent(null);
         }}
       />
     </div>

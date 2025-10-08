@@ -161,15 +161,27 @@ class Student:
         db = get_db()
         cursor = db.cursor(cursor_factory=RealDictCursor)
         cursor.execute("""
-            SELECT s.id, s.idnumber, s.firstname, s.lastname, s.gender, s.yearlevel,
-                p.programcode
+            SELECT 
+                s.id,
+                s.idnumber,
+                s.firstname,
+                s.lastname,
+                s.gender,
+                s.yearlevel,
+                s.program_id,
+                p.programcode,
+                p.programname,
+                c.id AS college_id,
+                c.collegecode,
+                c.collegename
             FROM students s
             LEFT JOIN programs p ON s.program_id = p.id
+            LEFT JOIN colleges c ON p.college_id = c.id
         """)
         students = cursor.fetchall()
         cursor.close()
         return students
-    
+
     @staticmethod
     def get(id_number):
         db = get_db()

@@ -9,7 +9,7 @@ import ProgramForm from "./ProgramForm";
 import StudentForm from "./StudentForm";
 import "../styles/Box.css";
 
-function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag, selectedRow, editCollege, editProgram, clearEdit }) {
+function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag, selectedRow, editCollege, editProgram, editStudent, clearEdit }) {
   const [rows, setRows] = useState([]);
   let columns = [];
   let dropdownOptions = [];
@@ -36,7 +36,7 @@ function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag, selected
         p.id,            
         p.programcode,   
         p.programname,   
-        p.collegecode,   
+        p.collegecode || "N/A",   
         p.collegename,   
         p.college_id     
       ]);
@@ -44,7 +44,6 @@ function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag, selected
     })
     .catch((err) => console.error("Error fetching programs:", err));
   };
-
 
   const loadStudents = () => {
     fetch("http://127.0.0.1:5000/api/students")
@@ -57,13 +56,17 @@ function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag, selected
           s.lastname,
           s.gender,
           s.yearlevel,
-          s.programcode || "N/A"
+          s.programcode || "N/A",
+          s.programname,
+          s.collegecode,
+          s.collegename,
+          s.program_id,
+          s.college_id
         ]);
         setRows(formatted);
       })
       .catch((err) => console.error("Error fetching students:", err));
   };
-
 
   useEffect(() => {
     if (activePage === "colleges") {
@@ -173,30 +176,29 @@ return (
 
           {activePage === "students" && (
             <StudentForm
+              isEditing={!!editStudent}
+              selectedStudent={editStudent}
               onSubmit={(data) => {
-                const payload = {
-                  idNumber: data.idNumber,
-                  firstname: data.firstname,   
-                  lastname: data.lastname,    
-                  gender: data.gender,
-                  yearLevel: data.yearLevel,
-                  program_id: data.program_id,
-                };
-                console.log("Submitting student payload:", JSON.stringify(payload, null, 2));
+                const isEditing = !!editStudent;
+                const endpoint = isEditing
+                  ? `http://127.0.0.1:5000/api/students?id=${editStudent.id}`
+                  : "http://127.0.0.1:5000/api/students";
 
+                  const method = isEditing ? "PUT" : "POST";
 
-                fetch("http://127.0.0.1:5000/api/students", {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify(payload),
+                fetch(endpoint, {
+                  method,
+                  headers: {"Content-Type": "application/json",},
+                  body: JSON.stringify(data),
                 })
                   .then((res) => res.json())
                   .then((result) => {
-                    console.log("Student created:", result);
+                    console.log(isEditing ? "Student updated:" : "Student created:", result);
                     loadStudents();
                     onCancel();
+                    clearEdit?.();
+
+                    if (onRowSelect) onRowSelect(null);
                   })
                   .catch((err) => console.error("Error creating student:", err));
               }}
