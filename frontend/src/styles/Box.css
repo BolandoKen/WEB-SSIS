@@ -63,3 +63,13 @@
   align-self: stretch;
   flex-grow: 0;
 }
+
+.page-counter{
+  width: 60px;
+  padding: 10px;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-regular);
+  color: var(--color-neutral-grey);
+  align-items: center;
+  text-align: center;
+}

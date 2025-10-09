@@ -1,16 +1,19 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import "../styles/Table.css";
 
 function Table({ columns, rows, onRowClick }) {
   const [selectedRow, setSelectedRow] = useState(null);
 
+  useEffect(() => {
+    setSelectedRow(null);
+  }, [rows]);
+
   const handleRowClick = (row, rowIndex) => {
     if (selectedRow === rowIndex) {
-      // unselect if clicked again
+
       setSelectedRow(null);
       if (onRowClick) onRowClick(null, null);
     } else {
-      // select new row
       setSelectedRow(rowIndex);
       if (onRowClick) onRowClick(row, rowIndex);
     }

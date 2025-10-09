@@ -14,6 +14,23 @@ function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag, selected
   let columns = [];
   let dropdownOptions = [];
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 10;
+
+  const totalPages = Math.ceil(rows.length / rowsPerPage);
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const currentRows = rows.slice(startIndex, endIndex);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+
   const loadcolleges = () => {
     fetch("http://127.0.0.1:5000/api/colleges")
     .then((res) => res.json())
@@ -234,7 +251,7 @@ return (
           <div className="box-table-section">
             <Table
               columns={columns}
-              rows={rows}
+              rows={currentRows}
               selectedRow={selectedRow}
               onRowClick={(row, index) => {
                 onRowSelect(row);
@@ -243,20 +260,26 @@ return (
           </div>
 
           <div className="box-button-section">
-            {selectedRow && (
-              <div style={{ marginTop: "10px", color: "#aaa" }}>
-                <strong>Selected Row:</strong> {JSON.stringify(selectedRow)}
-              </div>
-            )}
             <PageButton
+              className="previous-button"
               href="#"
               icon="/icons/ChevronLeft.svg"
               hoverIcon="/icons/ChevronLeftHover.svg"
+              onClick={handlePrevPage}
+              disabled={currentPage === 1}
             />
+
+            <span className="page-counter">
+              {currentPage} of {totalPages}
+            </span>
+
             <PageButton
+              className="next-button"
               href="#"
               icon="/icons/ChevronRight.svg"
               hoverIcon="/icons/ChevronRightHover.svg"
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
             />
           </div>
         </>
