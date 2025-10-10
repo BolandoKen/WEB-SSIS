@@ -18,10 +18,34 @@
 }
 
 .searchbar-text{
-  color: var(--color-neutral-grey);
-
+  display: flex;
+  border: none;
+  background-color: transparent;
   font-family: 'Poppins', sans-serif;
   font-style: normal;
-  font-size: var(--font-size-regular);
 
+  flex: 1;
 }
+
+.searchbar-text::placeholder{
+  color: var(--color-neutral-grey);
+  font-size: var(--font-size-regular);
+}
+
+.searchbar-text:focus{
+  outline: none;
+}
+
+.clear-btn{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border: none;
+
+  cursor: pointer;
+  background: transparent;
+  border-radius: 50%;
+}
+
+

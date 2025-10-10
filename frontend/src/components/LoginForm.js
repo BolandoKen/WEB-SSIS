@@ -25,6 +25,7 @@ function LoginForm({ onSubmit, onToggle }) {
       </div>
 
       <input
+        className="auth-input"
         type="email"
         name="email"
         placeholder="Email"
@@ -34,6 +35,7 @@ function LoginForm({ onSubmit, onToggle }) {
       />
 
       <input
+        className="auth-input"
         type="password"
         name="password"
         placeholder="Password"

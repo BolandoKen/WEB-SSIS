@@ -16,11 +16,18 @@ function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag, selected
 
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const totalPages = Math.ceil(rows.length / rowsPerPage);
+  const filteredRows = rows.filter((row) =>
+    row.some((cell) =>
+      cell?.toString().toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  );
+
+  const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
   const startIndex = (currentPage - 1) * rowsPerPage;
   const endIndex = startIndex + rowsPerPage;
-  const currentRows = rows.slice(startIndex, endIndex);
+  const currentRows = filteredRows.slice(startIndex, endIndex);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -190,7 +197,6 @@ return (
               onToggle={onCancel}
             />
           )}
-
           {activePage === "students" && (
             <StudentForm
               isEditing={!!editStudent}
@@ -226,7 +232,9 @@ return (
       ) : (
         <>
           <div className="box-tool-section">
-            <Searchbar />
+            <Searchbar 
+              onSearch={setSearchTerm}
+            />
             <p className="sort-text">Sort by:</p>
 
             <div className="dropdown-container">  

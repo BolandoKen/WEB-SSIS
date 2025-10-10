@@ -2,16 +2,16 @@ import React, { useState } from "react";
 import "../styles/OrderButton.css";
 
 function OrderButton({ upIcon, upHover, downIcon, downHover, onClick }) {
-  const [isUp, setIsUp] = useState(true);       // track sort direction
+  const [isUp, setIsUp] = useState(true);     
   const [currentIcon, setCurrentIcon] = useState(upIcon);
 
   const handleClick = () => {
-    setIsUp(!isUp); // toggle direction
+    setIsUp(!isUp); 
 
-    // Update current icon immediately
+ 
     setCurrentIcon(!isUp ? upIcon : downIcon);
 
-    if (onClick) onClick(!isUp); // optional callback
+    if (onClick) onClick(!isUp); 
   };
 
   const handleMouseEnter = () => {

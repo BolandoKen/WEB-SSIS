@@ -41,7 +41,7 @@
     box-shadow: var(--protruding);
 }
 
-input{
+.auth-input{
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -68,7 +68,7 @@ input{
     flex-grow: 0;
 }
 
-input::placeholder {
+.auth-input::placeholder {
 
     color: var(--color-neutral-grey);
     font-family: var(--font-family-base);
@@ -77,7 +77,7 @@ input::placeholder {
     font-size: var(--font-size-regular);
 }
 
-input:focus {
+.auth-input:focus {
     outline: none;
 }
 
