@@ -93,6 +93,12 @@ function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag, selected
   };
 
   useEffect(() => {
+  if (isAdding) {
+    setSearchTerm(""); // clear search when entering add/edit mode
+  }
+  }, [isAdding]);
+
+  useEffect(() => {
     if (activePage === "colleges") {
       loadcolleges();
     }
@@ -234,6 +240,7 @@ return (
           <div className="box-tool-section">
             <Searchbar 
               onSearch={setSearchTerm}
+              query={searchTerm}
             />
             <p className="sort-text">Sort by:</p>
 
