@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import "../styles/Searchbar.css";
 
 function Searchbar({ onSearch, query}) {
-  const [query, setQuery] = useState("");
   const [currentIcon, setCurrentIcon] = useState("/icons/ClearButton.svg");
 
   const handleChange = (e) => {

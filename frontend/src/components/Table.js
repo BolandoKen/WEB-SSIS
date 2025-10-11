@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import "../styles/Table.css";
 
-function Table({ columns, rows, onRowClick }) {
+function Table({ columns, rows, onRowClick, onSort, sortConfig }) {
   const [selectedRow, setSelectedRow] = useState(null);
 
   useEffect(() => {
@@ -24,9 +24,27 @@ function Table({ columns, rows, onRowClick }) {
       <thead className="table-header">
         <tr>
           {columns.map((col, index) => (
-            <th key={index} className="table-header-text">
-              {col}
-            </th>
+          <th
+            key={index}
+            className="table-header-text"
+            title="Click to sort"
+            onClick={() => onSort(index)}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+              <span>{col}</span>
+              {sortConfig?.key === index + 1 && (
+                <img
+                  src={
+                    sortConfig.direction === "asc"
+                      ? "/icons/AscendingIcon.svg"
+                      : "/icons/DescendingIcon.svg"
+                  }
+                  alt="sort arrow"
+                  className="sort-arrow"
+                />
+              )}
+            </div>
+          </th>
           ))}
         </tr>
       </thead>

@@ -1,7 +1,7 @@
 .table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed; /* ensures even column widths */
+  table-layout: fixed;
 }
 
 .table-header-text,
@@ -12,7 +12,6 @@
   border-bottom: 1px solid var(--color-neutral-grey);
   text-align: left;
 
-  /* ✅ Single line only */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -22,6 +21,13 @@
   font-weight: 100;
   font-size: var(--font-size-regular);
   color: var(--color-neutral-grey);
+
+  transition: all 0.3s ease-in-out;
+}
+
+.table-header-text:hover{
+  color: var(--color-primary);
+  cursor: pointer;
 }
 
 .table-row {
@@ -36,4 +42,6 @@
 .table-row.selected {
   background-color: var(--color-primary-100);
 }
+
+
 

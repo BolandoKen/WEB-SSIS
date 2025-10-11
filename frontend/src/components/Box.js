@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Searchbar from "./Searchbar";
 import Table from "./Table";
-import Dropdown from "./Dropdown";
-import OrderButton from "./OrderButton";
 import PageButton from "./PageButton";
 import CollegeForm from "./CollegeForm";
 import ProgramForm from "./ProgramForm";
@@ -12,11 +10,22 @@ import "../styles/Box.css";
 function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag, selectedRow, editCollege, editProgram, editStudent, clearEdit }) {
   const [rows, setRows] = useState([]);
   let columns = [];
-  let dropdownOptions = [];
 
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
   const [searchTerm, setSearchTerm] = useState("");
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+
+  const handleSort = (columnIndex) => {
+  const realIndex = columnIndex + 1; // skip id column
+
+  let direction = "asc";
+  if (sortConfig.key === realIndex && sortConfig.direction === "asc") {
+    direction = "desc";
+  }
+
+  setSortConfig({ key: realIndex, direction });
+};
 
   const filteredRows = rows.filter((row) =>
     row.some((cell) =>
@@ -24,10 +33,31 @@ function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag, selected
     )
   );
 
+  const sortedRows = React.useMemo(() => {
+    const filtered = rows.filter((row) =>
+      row.some((cell) =>
+        cell?.toString().toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+
+    if (sortConfig.key === null) return filtered;
+
+    const sorted = [...filtered].sort((a, b) => {
+      const aValue = a[sortConfig.key]?.toString().toLowerCase();
+      const bValue = b[sortConfig.key]?.toString().toLowerCase();
+
+      if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
+      if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
+      return 0;
+    });
+
+    return sorted;
+  }, [rows, searchTerm, sortConfig]);
+
   const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
   const startIndex = (currentPage - 1) * rowsPerPage;
   const endIndex = startIndex + rowsPerPage;
-  const currentRows = filteredRows.slice(startIndex, endIndex);
+  const currentRows = sortedRows.slice(startIndex, endIndex);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -36,7 +66,6 @@ function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag, selected
   const handlePrevPage = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
-
 
   const loadcolleges = () => {
     fetch("http://127.0.0.1:5000/api/colleges")
@@ -113,27 +142,19 @@ function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag, selected
   switch (activePage) {
     case "students":
       columns = ["ID Number", "Firstname", "Lastname", "Gender", "Year Level", "Program"];
-      dropdownOptions = ["All", "Firstname", "Lastname", "Gender", "Year Level", "Program"];
       break;
 
     case "programs":
       columns = ["Code", "Name", "College"];
-      dropdownOptions = ["All", "Code", "Name", "College"];
       break;
 
     case "colleges":
       columns = ["Code", "Name"];
-      dropdownOptions = ["All", "Code", "Name"];
       break;
 
     default:
       columns = [];
-      dropdownOptions = ["All"];
   }
-
-  const handleSelect = (option) => {
-    console.log("Selected:", option);
-  };
 
 return (
     <div className="box">
@@ -242,25 +263,6 @@ return (
               onSearch={setSearchTerm}
               query={searchTerm}
             />
-            <p className="sort-text">Sort by:</p>
-
-            <div className="dropdown-container">  
-              <Dropdown
-              label="All"
-              options={dropdownOptions}
-              onSelect={handleSelect}
-            />
-            </div>
-
-            <OrderButton
-              upIcon="/icons/ArrowUp.svg"
-              upHover="/icons/ArrowUpHover.svg"
-              downIcon="/icons/ArrowDown.svg"
-              downHover="/icons/ArrowDownHover.svg"
-              onClick={(isUp) =>
-                console.log("Sorting:", isUp ? "Ascending" : "Descending")
-              }
-            />
           </div>
 
           <div className="box-table-section">
@@ -268,6 +270,8 @@ return (
               columns={columns}
               rows={currentRows}
               selectedRow={selectedRow}
+              onSort={handleSort}        // Pass your sort handler
+              sortConfig={sortConfig} 
               onRowClick={(row, index) => {
                 onRowSelect(row);
               }}
