@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/ContentBox.css";
 import ToolbarContainer from "./ToolbarContainer";
 import Box from "./Box";
@@ -8,10 +8,9 @@ function ContentBox({ activePage }) {
   const [selectedRow, setSelectedRow] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
   const [reloadFlag, setReloadFlag] = useState(false);
-  const [editCollege, setEditCollege] = useState(null); // new state for editing
+  const [editCollege, setEditCollege] = useState(null); 
   const [editProgram, setEditProgram] = useState(null);
   const [editStudent, setEditStudent] = useState(null);
-
 
   const handleEdit = (rowData) => {
     if (!rowData) {
@@ -57,12 +56,20 @@ function ContentBox({ activePage }) {
   setEditProgram(null);
   setEditStudent(null);
   setSelectedRow(null);
-};
+  };
 
-const handleDeleteSuccess = (id) => {
+  const handleDeleteSuccess = (id) => {
   setSelectedRow(null);
   setReloadFlag((prev) => !prev);
-};
+  };
+
+  useEffect(() => {
+    setIsAdding(false);
+    setEditCollege(null);
+    setEditProgram(null);
+    setEditStudent(null);
+    setSelectedRow(null);
+  }, [activePage]);
 
   return (
     <div className="content-box">
