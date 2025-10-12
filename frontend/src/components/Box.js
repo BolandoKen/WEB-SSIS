@@ -122,8 +122,14 @@ function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag, selected
   };
 
   useEffect(() => {
+  if (onRowSelect) onRowSelect(null);
+
+  clearEdit?.();
+}, [activePage]);
+
+  useEffect(() => {
   if (isAdding) {
-    setSearchTerm(""); // clear search when entering add/edit mode
+    setSearchTerm(""); 
   }
   }, [isAdding]);
 
