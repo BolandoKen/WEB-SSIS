@@ -169,6 +169,11 @@ return (
           {activePage === "colleges" && (
             <CollegeForm
               selectedCollege={editCollege} 
+               existingColleges={rows.map(r => ({
+                  id: r[0],
+                  collegecode: r[1],
+                  collegename: r[2]
+                }))}
               onSubmit={(data) => {
                 const isEditing = !!editCollege; 
                 const endpoint = isEditing

@@ -170,7 +170,6 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
           onChange={async (e) => {
             let value = e.target.value.replace(/[^\d-]/g, "");
 
-            // Auto-insert dash after 4 digits
             if (/^\d{4}$/.test(value)) {
               value = value + "-";
             }
@@ -179,7 +178,6 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
               setFormData({ ...formData, idNumber: value });
             }
 
-            // Check duplicate when full ID format entered
             if (/^\d{4}-\d{4}$/.test(value)) {
               try {
                 const res = await fetch(`http://127.0.0.1:5000/api/students/check-id/${value}`);
@@ -187,7 +185,7 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
 
                 if (data.exists) {
                   alert("⚠️ This ID number already exists! Please use another.");
-                  setFormData((prev) => ({ ...prev, idNumber: "" })); // clear input
+                  setFormData((prev) => ({ ...prev, idNumber: "" }));
                 }
               } catch (err) {
                 console.error("Error checking ID:", err);

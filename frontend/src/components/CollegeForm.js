@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/AddForm.css';
 
-function CollegeForm({ onSubmit, onToggle, selectedCollege }) {
+function CollegeForm({ onSubmit, onToggle, selectedCollege, existingColleges }) {
   const [formData, setFormData] = useState({
     collegename: '',
     collegecode: ''
@@ -22,14 +22,37 @@ function CollegeForm({ onSubmit, onToggle, selectedCollege }) {
   }, [selectedCollege]);
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: value // do NOT convert to uppercase
     });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Check exact duplicates (case-sensitive)
+    const codeExists = existingColleges.some(
+      (c) => c.collegecode === formData.collegecode &&
+             (!selectedCollege || c.id !== selectedCollege.id)
+    );
+
+    const nameExists = existingColleges.some(
+      (c) => c.collegename === formData.collegename &&
+             (!selectedCollege || c.id !== selectedCollege.id)
+    );
+
+    if (codeExists) {
+      alert('⚠️ This college code already exists!');
+      return;
+    }
+
+    if (nameExists) {
+      alert('⚠️ This college name already exists!');
+      return;
+    }
+
     onSubmit(formData);
   };
 
@@ -54,17 +77,10 @@ function CollegeForm({ onSubmit, onToggle, selectedCollege }) {
         required
       />
       <div className="button-section">
-        <button
-          type="button"
-          className="cancel-button"
-          onClick={onToggle}
-        >
+        <button type="button" className="cancel-button" onClick={onToggle}>
           Cancel
         </button>
-        <button
-          type="submit"
-          className="confirm-button"
-        >
+        <button type="submit" className="confirm-button">
           {selectedCollege ? 'Save Changes' : 'Add College'}
         </button>
       </div>
