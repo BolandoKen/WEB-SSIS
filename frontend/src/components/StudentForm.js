@@ -15,6 +15,7 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
 
   const [collegeOptions, setCollegeOptions] = useState([]);
   const [programOptions, setProgramOptions] = useState([]);
+  const [idError, setIdError] = useState("");
 
   useEffect(() => {
   if (selectedStudent) {
@@ -40,6 +41,42 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
   }
 }, [selectedStudent]);
 
+  const checkDuplicateId = async (idNumber) => {
+    if (!/^\d{4}-\d{4}$/.test(idNumber)) return;
+
+    try {
+      const res = await fetch(`http://127.0.0.1:5000/api/students/check-id/${idNumber}`);
+      const data = await res.json();
+
+      if (data.exists) {
+        setIdError("⚠️ This ID number already exists.");
+      } else {
+        setIdError("");
+      }
+    } catch (error) {
+      console.error("Error checking ID:", error);
+    }
+  };
+
+  const handleIdChange = (e) => {
+    let value = e.target.value.replace(/[^\d-]/g, "");
+
+    // Auto add dash
+    if (/^\d{4}$/.test(value)) {
+      value = value + "-";
+    }
+
+    if (value.length <= 9) {
+      setFormData({ ...formData, idNumber: value });
+    }
+
+    // If full format, check for duplicates
+    if (/^\d{4}-\d{4}$/.test(value)) {
+      checkDuplicateId(value);
+    } else {
+      setIdError("");
+    }
+  };
 
   useEffect(() => {
     fetch("http://127.0.0.1:5000/api/colleges")
@@ -88,6 +125,7 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (idError) return;
     onSubmit(formData);
   };
 
@@ -122,15 +160,45 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
           value={formData.gender}
           onSelect={(val) => handleDropdown("gender", val)}
         />
+        {/* ID Number */}
         <input
           className="input-field"
           type="text"
           name="idNumber"
           placeholder="0000-0000"
           value={formData.idNumber}
-          onChange={handleChange}
+          onChange={async (e) => {
+            let value = e.target.value.replace(/[^\d-]/g, "");
+
+            // Auto-insert dash after 4 digits
+            if (/^\d{4}$/.test(value)) {
+              value = value + "-";
+            }
+
+            if (value.length <= 9) {
+              setFormData({ ...formData, idNumber: value });
+            }
+
+            // Check duplicate when full ID format entered
+            if (/^\d{4}-\d{4}$/.test(value)) {
+              try {
+                const res = await fetch(`http://127.0.0.1:5000/api/students/check-id/${value}`);
+                const data = await res.json();
+
+                if (data.exists) {
+                  alert("⚠️ This ID number already exists! Please use another.");
+                  setFormData((prev) => ({ ...prev, idNumber: "" })); // clear input
+                }
+              } catch (err) {
+                console.error("Error checking ID:", err);
+              }
+            }
+          }}
+          pattern="\d{4}-\d{4}"
+          title="ID number must be in the format 0000-0000"
           required
         />
+
         <Dropdown
           className="form-dropdown"
           label={formData.yearLevel || "Year Level"}
@@ -140,7 +208,7 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
         />
       </div>
 
-      <div className="dropdown-section">
+    <div className="dropdown-section">
     {/* College Dropdown */}
     <Dropdown
         className="form-dropdown"

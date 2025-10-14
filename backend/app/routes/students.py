@@ -15,6 +15,12 @@ def get_student(id_number):
         return jsonify({"error": "Student not found"}), 404
     return jsonify(dict(student))
 
+@students_bp.route("/check-id/<string:id_number>", methods=["GET"])
+def check_id_number(id_number):
+    """Check if a student ID number already exists."""
+    student = Student.get(id_number)
+    return jsonify({"exists": student is not None})
+
 @students_bp.route("", methods=["POST"])
 def create_student():
     data = request.get_json()
