@@ -63,3 +63,26 @@ def update_program():
         return jsonify({"message": "Program updated successfully"})
     else:
         return jsonify({"error": "Failed to update program"}), 400
+    
+@programs_bp.route("/check-name", methods=["GET"])
+def check_program_name():
+    name = request.args.get("name")
+    ignore_id = request.args.get("ignore_id", type=int)
+
+    if not name:
+        return jsonify({"exists": False})
+
+    exists = Program.exists_name_global(name, ignore_id)
+    return jsonify({"exists": exists})
+
+
+@programs_bp.route("/check-code", methods=["GET"])
+def check_program_code():
+    code = request.args.get("code")
+    ignore_id = request.args.get("ignore_id", type=int)
+
+    if not code:
+        return jsonify({"exists": False})
+
+    exists = Program.exists_code_global(code, ignore_id)
+    return jsonify({"exists": exists})

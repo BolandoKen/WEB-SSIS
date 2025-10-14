@@ -252,7 +252,51 @@ class Program:
             cursor.close()
             print("Error updating program:", e)
             return False
+        
+    @staticmethod
+    def exists_name_global(name, ignore_id=None):
+        """Check if program name exists globally (case-insensitive), optionally ignoring a program by ID."""
+        conn = get_db()
+        cur = conn.cursor()
 
+        if ignore_id:
+            cur.execute(
+                "SELECT 1 FROM programs WHERE LOWER(programname) = LOWER(%s) AND id != %s",
+                (name, ignore_id)
+            )
+        else:
+            cur.execute(
+                "SELECT 1 FROM programs WHERE LOWER(programname) = LOWER(%s)",
+                (name,)
+            )
+
+        exists = cur.fetchone() is not None
+        cur.close()
+        conn.close()
+        return exists
+
+    @staticmethod
+    def exists_code_global(code, ignore_id=None):
+        """Check if program code exists globally (case-sensitive), optionally ignoring a program by ID."""
+        conn = get_db()
+        cur = conn.cursor()
+
+        if ignore_id:
+            cur.execute(
+                "SELECT 1 FROM programs WHERE programcode = %s AND id != %s",
+                (code, ignore_id)
+            )
+        else:
+            cur.execute(
+                "SELECT 1 FROM programs WHERE programcode = %s",
+                (code,)
+            )
+
+        exists = cur.fetchone() is not None
+        cur.close()
+        conn.close()
+        return exists
+    
 class Student:
     @staticmethod
     def all():

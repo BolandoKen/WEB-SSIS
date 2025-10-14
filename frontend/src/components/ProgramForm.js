@@ -6,7 +6,7 @@ function ProgramForm({ isEditing, onSubmit, onToggle, selectedProgram }) {
   const [formData, setFormData] = useState({
     programName: '',
     programCode: '',
-    college_id: '' 
+    college_id: ''
   });
   const [collegeOptions, setCollegeOptions] = useState([]);
 
@@ -36,10 +36,9 @@ function ProgramForm({ isEditing, onSubmit, onToggle, selectedProgram }) {
       .then((data) => {
         const options = data.map((c) => ({
           value: Number(c.id),
-          label: `${c.collegecode ?? c.collegeCode ?? ''} - ${c.collegename ?? c.collegeName ?? c.collegeName ?? ''}`.replace(/^ - /, '').trim()
+          label: `${c.collegecode ?? c.collegeCode ?? ''} - ${c.collegename ?? c.collegeName ?? ''}`.replace(/^ - /, '').trim()
         }));
         setCollegeOptions(options);
-        console.log('📥 loaded collegeOptions:', options);
       })
       .catch((err) => console.error('❌ Error fetching colleges:', err));
   }, []);
@@ -53,31 +52,43 @@ function ProgramForm({ isEditing, onSubmit, onToggle, selectedProgram }) {
     setFormData((s) => ({ ...s, college_id: Number.isNaN(num) ? '' : num }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const ignoreId = selectedProgram?.id; // Pass current program ID when editing
+
+    // Check program name
+    const resName = await fetch(`http://127.0.0.1:5000/api/programs/check-name?name=${encodeURIComponent(formData.programName)}&ignore_id=${ignoreId ?? ''}`);
+    const { exists: duplicateName } = await resName.json();
+    if (duplicateName) {
+      alert('⚠️ Program Name already exists globally.');
+      return;
+    }
+
+    // Check program code
+    const resCode = await fetch(`http://127.0.0.1:5000/api/programs/check-code?code=${encodeURIComponent(formData.programCode)}&ignore_id=${ignoreId ?? ''}`);
+    const { exists: duplicateCode } = await resCode.json();
+    if (duplicateCode) {
+      alert('⚠️ Program Code already exists globally.');
+      return;
+    }
+
+    // Submit if no duplicates
     onSubmit({
       programName: String(formData.programName).trim(),
       programCode: String(formData.programCode).trim(),
-      college_id: formData.college_id 
+      college_id: formData.college_id
     });
   };
 
   const selectedCollegeLabel = useMemo(() => {
-   
-    const programCollegeCode = selectedProgram?.collegecode ?? selectedProgram?.collegeCode;
-    const programCollegeName = selectedProgram?.collegename ?? selectedProgram?.collegeName;
-    if (isEditing && (programCollegeCode || programCollegeName)) {
-      return `${programCollegeCode ?? ''}${programCollegeCode && programCollegeName ? ' - ' : ''}${programCollegeName ?? ''}`.replace(/^ - /, '').trim() || 'College';
-    }
+  if (formData.college_id && collegeOptions.length > 0) {
+    const found = collegeOptions.find(opt => opt.value === Number(formData.college_id));
+    if (found) return found.label;
+  }
+  return 'College';
+}, [formData.college_id, collegeOptions]);
 
-    if (formData.college_id !== '' && collegeOptions.length > 0) {
-      const found = collegeOptions.find((opt) => opt.value === Number(formData.college_id));
-      if (found) return found.label;
-    }
-
-  
-    return 'College';
-  }, [isEditing, selectedProgram, formData.college_id, collegeOptions]);
 
   return (
     <form className="add-form" onSubmit={handleSubmit}>

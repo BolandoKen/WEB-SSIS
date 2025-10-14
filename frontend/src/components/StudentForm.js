@@ -41,43 +41,6 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
   }
 }, [selectedStudent]);
 
-  const checkDuplicateId = async (idNumber) => {
-    if (!/^\d{4}-\d{4}$/.test(idNumber)) return;
-
-    try {
-      const res = await fetch(`http://127.0.0.1:5000/api/students/check-id/${idNumber}`);
-      const data = await res.json();
-
-      if (data.exists) {
-        setIdError("⚠️ This ID number already exists.");
-      } else {
-        setIdError("");
-      }
-    } catch (error) {
-      console.error("Error checking ID:", error);
-    }
-  };
-
-  const handleIdChange = (e) => {
-    let value = e.target.value.replace(/[^\d-]/g, "");
-
-    // Auto add dash
-    if (/^\d{4}$/.test(value)) {
-      value = value + "-";
-    }
-
-    if (value.length <= 9) {
-      setFormData({ ...formData, idNumber: value });
-    }
-
-    // If full format, check for duplicates
-    if (/^\d{4}-\d{4}$/.test(value)) {
-      checkDuplicateId(value);
-    } else {
-      setIdError("");
-    }
-  };
-
   useEffect(() => {
     fetch("http://127.0.0.1:5000/api/colleges")
       .then((res) => res.json())
