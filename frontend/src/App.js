@@ -5,16 +5,22 @@ import AuthenticationPage from "./pages/AuthenticationPage";
 
 function App() {
   const [activePage, setActivePage] = useState("students");
-  
   const [user, setUser] = useState(null); 
 
+  const handleLogout = () => {
+    setUser(null); // This will show the AuthenticationPage again
+  };
+  
   if (!user) {
     return <AuthenticationPage onLogin={setUser} />; 
   }
 
   return (
     <div className="app">
-      <Sidebar setActivePage={setActivePage} />
+      <Sidebar 
+        setActivePage={setActivePage} 
+        onLogout={handleLogout}
+      />
       <ContentBox activePage={activePage} />
     </div>
   );
