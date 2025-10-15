@@ -44,20 +44,21 @@ function Dropdown({ label, options, value, onSelect, disabled}) {
         )}
       </button>
 
-      {isOpen && !disabled && (
-        <ul className="dropdown-menu">
+     {isOpen && !disabled && (
+      <ul className="dropdown-menu">
+        <div className="dropdown-scroll">
           {options.map((option, index) => {
             const val = typeof option === "object" ? option.value : option;
             const display = typeof option === "object" ? option.label : option;
-
             return (
               <li key={val || index} onClick={() => handleSelect(option)}>
                 {display}
               </li>
             );
           })}
-        </ul>
-      )}
+        </div>
+      </ul>
+    )}
     </div>
   );
 }
