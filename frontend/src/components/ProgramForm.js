@@ -10,6 +10,10 @@ function ProgramForm({ isEditing, onSubmit, onToggle, selectedProgram }) {
   });
   const [collegeOptions, setCollegeOptions] = useState([]);
 
+  const canSubmit = formData.programName.trim() !== '' &&
+                  formData.programCode.trim() !== '' &&
+                  formData.college_id !== '';
+
   useEffect(() => {
     if (selectedProgram) {
       const rawCollegeId =
@@ -55,9 +59,9 @@ function ProgramForm({ isEditing, onSubmit, onToggle, selectedProgram }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const ignoreId = selectedProgram?.id; // Pass current program ID when editing
+    const ignoreId = selectedProgram?.id; 
 
-    // Check program name
+   
     const resName = await fetch(`http://127.0.0.1:5000/api/programs/check-name?name=${encodeURIComponent(formData.programName)}&ignore_id=${ignoreId ?? ''}`);
     const { exists: duplicateName } = await resName.json();
     if (duplicateName) {
@@ -65,7 +69,6 @@ function ProgramForm({ isEditing, onSubmit, onToggle, selectedProgram }) {
       return;
     }
 
-    // Check program code
     const resCode = await fetch(`http://127.0.0.1:5000/api/programs/check-code?code=${encodeURIComponent(formData.programCode)}&ignore_id=${ignoreId ?? ''}`);
     const { exists: duplicateCode } = await resCode.json();
     if (duplicateCode) {
@@ -73,7 +76,6 @@ function ProgramForm({ isEditing, onSubmit, onToggle, selectedProgram }) {
       return;
     }
 
-    // Submit if no duplicates
     onSubmit({
       programName: String(formData.programName).trim(),
       programCode: String(formData.programCode).trim(),
@@ -119,7 +121,11 @@ function ProgramForm({ isEditing, onSubmit, onToggle, selectedProgram }) {
       />
       <div className="button-section">
         <button type="button" className="cancel-button" onClick={onToggle}>Cancel</button>
-        <button type="submit" className="confirm-button">
+        <button 
+          type="submit" 
+          className="confirm-button"
+          disabled={!canSubmit}
+          >
           {selectedProgram ? 'Save Changes' : 'Add Program'}
         </button>
       </div>

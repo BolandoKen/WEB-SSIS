@@ -17,6 +17,17 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
   const [programOptions, setProgramOptions] = useState([]);
   const [idError, setIdError] = useState("");
 
+  const canSubmit = 
+    formData.firstname.trim() !== "" &&
+    formData.lastname.trim() !== "" &&
+    formData.idNumber.trim() !== "" &&
+    formData.gender !== "" &&
+    formData.yearLevel !== "" &&
+    formData.college_id !== "" &&
+    formData.program_id !== "" &&
+    !idError;
+
+
   useEffect(() => {
   if (selectedStudent) {
     setFormData({
@@ -195,7 +206,11 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
         <button type="button" className="cancel-button" onClick={onToggle}>
           Cancel
         </button>
-        <button type="submit" className="confirm-button">
+        <button 
+          type="submit" 
+          className="confirm-button"
+          disabled={!canSubmit}
+        >
           {isEditing ? "Save Changes" : "Add Student"}
         </button>
       </div>
