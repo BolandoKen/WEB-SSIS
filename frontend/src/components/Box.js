@@ -17,7 +17,7 @@ function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag, selected
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 
   const handleSort = (columnIndex) => {
-  const realIndex = columnIndex + 1; // skip id column
+  const realIndex = columnIndex + 1;
 
   let direction = "asc";
   if (sortConfig.key === realIndex && sortConfig.direction === "asc") {
