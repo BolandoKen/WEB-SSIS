@@ -57,31 +57,45 @@ function ProgramForm({ isEditing, onSubmit, onToggle, selectedProgram }) {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const ignoreId = selectedProgram?.id; 
+  const ignoreId = selectedProgram?.id; 
 
-   
-    const resName = await fetch(`http://127.0.0.1:5000/api/programs/check-name?name=${encodeURIComponent(formData.programName)}&ignore_id=${ignoreId ?? ''}`);
-    const { exists: duplicateName } = await resName.json();
-    if (duplicateName) {
-      alert('⚠️ Program Name already exists globally.');
-      return;
-    }
+  const resName = await fetch(
+    `http://127.0.0.1:5000/api/programs/check-name?name=${encodeURIComponent(
+      formData.programName
+    )}&ignore_id=${ignoreId ?? ''}`
+  );
+  const { exists: duplicateName } = await resName.json();
+  if (duplicateName) {
+    alert('⚠️ Program Name already exists globally.');
+    return;
+  }
 
-    const resCode = await fetch(`http://127.0.0.1:5000/api/programs/check-code?code=${encodeURIComponent(formData.programCode)}&ignore_id=${ignoreId ?? ''}`);
-    const { exists: duplicateCode } = await resCode.json();
-    if (duplicateCode) {
-      alert('⚠️ Program Code already exists globally.');
-      return;
-    }
+  // Check for duplicate program code
+  const resCode = await fetch(
+    `http://127.0.0.1:5000/api/programs/check-code?code=${encodeURIComponent(
+      formData.programCode
+    )}&ignore_id=${ignoreId ?? ''}`
+  );
+  const { exists: duplicateCode } = await resCode.json();
+  if (duplicateCode) {
+    alert('⚠️ Program Code already exists globally.');
+    return;
+  }
 
-    onSubmit({
-      programName: String(formData.programName).trim(),
-      programCode: String(formData.programCode).trim(),
-      college_id: formData.college_id
-    });
-  };
+  const confirmed = selectedProgram
+    ? window.confirm('Are you sure you want to save these changes?')
+    : window.confirm('Are you sure you want to add this program?');
+
+  if (!confirmed) return; 
+
+  onSubmit({
+    programName: String(formData.programName).trim(),
+    programCode: String(formData.programCode).trim(),
+    college_id: formData.college_id
+  });
+};
 
   const selectedCollegeLabel = useMemo(() => {
   if (formData.college_id && collegeOptions.length > 0) {

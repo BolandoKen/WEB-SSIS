@@ -25,36 +25,42 @@ function CollegeForm({ onSubmit, onToggle, selectedCollege, existingColleges }) 
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value // do NOT convert to uppercase
+      [name]: value 
     });
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    // Check exact duplicates (case-sensitive)
-    const codeExists = existingColleges.some(
-      (c) => c.collegecode === formData.collegecode &&
-             (!selectedCollege || c.id !== selectedCollege.id)
-    );
+  const codeExists = existingColleges.some(
+    (c) => c.collegecode === formData.collegecode &&
+           (!selectedCollege || c.id !== selectedCollege.id)
+  );
 
-    const nameExists = existingColleges.some(
-      (c) => c.collegename === formData.collegename &&
-             (!selectedCollege || c.id !== selectedCollege.id)
-    );
+  const nameExists = existingColleges.some(
+    (c) => c.collegename === formData.collegename &&
+           (!selectedCollege || c.id !== selectedCollege.id)
+  );
 
-    if (codeExists) {
-      alert('⚠️ This college code already exists!');
-      return;
-    }
+  if (codeExists) {
+    alert('⚠️ This college code already exists!');
+    return;
+  }
 
-    if (nameExists) {
-      alert('⚠️ This college name already exists!');
-      return;
-    }
+  if (nameExists) {
+    alert('⚠️ This college name already exists!');
+    return;
+  }
 
-    onSubmit(formData);
-  };
+  const confirmed = selectedCollege
+    ? window.confirm('Are you sure you want to save these changes?')
+    : window.confirm('Are you sure you want to add this college?');
+
+  if (!confirmed) return; 
+
+  onSubmit(formData);
+};
+
 
   return (
     <form className="add-form" onSubmit={handleSubmit}>

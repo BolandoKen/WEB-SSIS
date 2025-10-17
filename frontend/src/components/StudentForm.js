@@ -98,10 +98,17 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    if (idError) return;
-    onSubmit(formData);
-  };
+  e.preventDefault();
+  if (idError) return;
+
+  const confirmed = isEditing
+    ? window.confirm("Are you sure you want to save these changes?")
+    : window.confirm("Are you sure you want to add this student?");
+  
+  if (!confirmed) return; 
+
+  onSubmit(formData);
+};
 
   return (
     <form className="add-form" onSubmit={handleSubmit}>
