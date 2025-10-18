@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 
-function LoginForm({ onSubmit, onToggle }) {
+function SignupForm({ onSubmit, onToggle }) {
   const [formData, setFormData] = useState({
+    username: "",
     email: "",
     password: ""
   });
@@ -15,14 +16,24 @@ function LoginForm({ onSubmit, onToggle }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(formData); // send actual input values
+    onSubmit(formData); // send actual user input
   };
 
   return (
-    <form className="login-form" onSubmit={handleSubmit}>
-      <div className="signup-header">
-        <img src="icons/UserProfile.svg" alt="Logo" className="profile-pic" />
+    <form className="signup-form" onSubmit={handleSubmit}>
+       <div className="text-section">
+        <p className="welcome-text">Get started</p>
+        <p className="subtext">Complete the form to set up your profile.</p>
       </div>
+      <input
+        className="auth-input"
+        type="text"
+        name="username"
+        placeholder="Username"
+        value={formData.username}
+        onChange={handleChange}
+        required
+      />
 
       <input
         className="auth-input"
@@ -44,14 +55,14 @@ function LoginForm({ onSubmit, onToggle }) {
         required
       />
 
-      <button type="submit" className="confirm-button">Log in</button>
+      <button type="submit" className="confirm-button">Sign Up</button>
 
       <p className="toggle-text">
-        Don’t have an account?
-        <span className="toggle-link" onClick={onToggle}> Sign Up</span>
+        Already have an account?
+        <span className="toggle-link" onClick={onToggle}> Login</span>
       </p>
     </form>
   );
 }
 
-export default LoginForm;
+export default SignupForm;
