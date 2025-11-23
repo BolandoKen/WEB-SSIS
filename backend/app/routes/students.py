@@ -1,10 +1,9 @@
 from flask import Blueprint, request, jsonify
-from app.models import Student
+from app.models.students import Student
 import os
 import uuid
 from app.supabase_client import supabase
 from storage3.exceptions import StorageApiError
-
 
 students_bp = Blueprint("students", __name__, url_prefix="/api/students")
 

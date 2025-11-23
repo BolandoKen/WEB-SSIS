@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from psycopg2.extras import RealDictCursor
-from app.models import Program, get_db
+from app.models.programs import Program, get_db
 programs_bp = Blueprint("programs", __name__, url_prefix="/api/programs")
 
 @programs_bp.route("/", methods=["GET"])
@@ -74,7 +74,6 @@ def check_program_name():
 
     exists = Program.exists_name_global(name, ignore_id)
     return jsonify({"exists": exists})
-
 
 @programs_bp.route("/check-code", methods=["GET"])
 def check_program_code():
