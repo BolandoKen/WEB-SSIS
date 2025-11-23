@@ -311,6 +311,7 @@ class Student:
                 s.gender,
                 s.yearlevel,
                 s.program_id,
+                s.profile_photo_url,  -- add this
                 p.programcode,
                 p.programname,
                 c.id AS college_id,
@@ -329,7 +330,9 @@ class Student:
         db = get_db()
         cursor = db.cursor(cursor_factory=RealDictCursor)
         cursor.execute("""
-            SELECT s.idNumber, s.firstname, s.lastname, s.gender, s.yearLevel, p.programCode
+            SELECT s.idNumber, s.firstname, s.lastname, s.gender, s.yearLevel,
+                s.profile_photo_url,  -- add this
+                p.programCode
             FROM students s
             JOIN programs p ON s.program_id = p.id
             WHERE s.idNumber = %s
@@ -337,16 +340,16 @@ class Student:
         student = cursor.fetchone()
         cursor.close()
         return student
-    
+
     @staticmethod
-    def add(idNumber, firstname, lastname, gender, yearLevel, program_id):
+    def add(idNumber, firstname, lastname, gender, yearLevel, program_id, profile_photo_url=None):
         db = get_db()
         cursor = db.cursor()
         try:
             cursor.execute("""
-                INSERT INTO students (idNumber, firstname, lastname, gender, yearLevel, program_id)
-                VALUES (%s, %s, %s, %s, %s, %s)
-            """, (idNumber, firstname, lastname, gender, yearLevel, program_id))
+                INSERT INTO students (idNumber, firstname, lastname, gender, yearLevel, program_id, profile_photo_url)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """, (idNumber, firstname, lastname, gender, yearLevel, program_id, profile_photo_url))
             db.commit()
             cursor.close()
             return True
@@ -369,17 +372,23 @@ class Student:
             db.rollback()
             cursor.close()
             return False
-        
+    
     @staticmethod
-    def update(student_id, idNumber, firstname, lastname, gender, yearLevel, program_id):
+    def update(student_id, idNumber, firstname, lastname, gender, yearLevel, program_id, profile_photo_url):
         db = get_db()
         cursor = db.cursor()
         try:
             cursor.execute("""
                 UPDATE students
-                SET idNumber = %s, firstname = %s, lastname = %s, gender = %s, yearLevel = %s, program_id = %s
+                SET idNumber = %s,
+                    firstname = %s,
+                    lastname = %s,
+                    gender = %s,
+                    yearLevel = %s,
+                    program_id = %s,
+                    profile_photo_url = %s
                 WHERE id = %s
-            """, (idNumber, firstname, lastname, gender, yearLevel, program_id, student_id))
+            """, (idNumber, firstname, lastname, gender, yearLevel, program_id, profile_photo_url, student_id))
             db.commit()
             updated = cursor.rowcount > 0
             cursor.close()

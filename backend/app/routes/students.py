@@ -1,5 +1,10 @@
 from flask import Blueprint, request, jsonify
 from app.models import Student
+import os
+import uuid
+from app.supabase_client import supabase
+from storage3.exceptions import StorageApiError
+
 
 students_bp = Blueprint("students", __name__, url_prefix="/api/students")
 
@@ -30,16 +35,16 @@ def create_student():
     gender = data.get("gender")
     yearLevel = data.get("yearLevel")
     program_id = data.get("program_id")
-
-    print("DEBUG DATA:", data)
-    print(idNumber, firstname, lastname, gender, yearLevel, program_id)
+    profile_photo_url = data.get("profile_photo_url")  # <- new field
 
     if not idNumber or not firstname or not lastname or not gender or not yearLevel or not program_id:
         return jsonify({"error": "Missing required fields"}), 400
 
-    success = Student.add(idNumber, firstname, lastname, gender, yearLevel, program_id)
+    # Add student, now including profile URL
+    success = Student.add(idNumber, firstname, lastname, gender, yearLevel, program_id, profile_photo_url)
     if not success:
         return jsonify({"error": "Failed to create student"}), 400
+
     return jsonify({"message": "Student created successfully"}), 201
 
 @students_bp.route("", methods=["DELETE"])
@@ -63,11 +68,41 @@ def update_student():
     gender = data.get("gender")
     yearLevel = data.get("yearLevel")
     program_id = data.get("program_id")
+    profile_photo_url = data.get("profile_photo_url")
 
     if not idNumber or not firstname or not lastname or not gender or not yearLevel or not program_id:
         return jsonify({"error": "Missing required fields"}), 400
 
-    if Student.update(student_id, idNumber, firstname, lastname, gender, yearLevel, program_id):
+    if Student.update(student_id, idNumber, firstname, lastname, gender, yearLevel, program_id, profile_photo_url):
         return jsonify({"message": "Student updated successfully"}), 200
     else:
         return jsonify({"error": "Failed to update student"}), 400
+    
+@students_bp.route("/upload-profile", methods=["POST"])
+def upload_profile():
+    file = request.files.get("file")
+    if not file:
+        return jsonify({"error": "No file uploaded"}), 400
+
+    file_ext = os.path.splitext(file.filename)[1]
+    filename = f"{uuid.uuid4()}{file_ext}"
+
+    try:
+        supabase.storage.from_("student-photos").upload(filename, file.read())
+        public_url = supabase.storage.from_("student-photos").get_public_url(filename)
+        return jsonify({"url": public_url}), 200
+
+    except StorageApiError as e:
+        return jsonify({"error": f"Upload failed: {e}"}), 500
+
+@students_bp.route("/delete-profile", methods=["DELETE"])
+def delete_profile():
+    filename = request.args.get("filename")
+    if not filename:
+        return jsonify({"error": "No file specified"}), 400
+
+    try:
+        supabase.storage.from_("student-photos").remove([filename])
+        return jsonify({"message": "Deleted"}), 200
+    except StorageApiError as e:
+        return jsonify({"error": str(e)}), 500
