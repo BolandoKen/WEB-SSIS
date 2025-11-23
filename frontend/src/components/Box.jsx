@@ -97,7 +97,7 @@ function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag, selected
     })
     .catch((err) => console.error("Error fetching programs:", err));
   };
-
+  
   const loadStudents = () => {
     fetch("http://127.0.0.1:5000/api/students")
       .then((res) => res.json())
@@ -114,7 +114,8 @@ function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag, selected
           s.collegecode,
           s.collegename,
           s.program_id,
-          s.college_id
+          s.college_id,
+          s.profile_photo_url || ""
         ]);
         setRows(formatted);
       })
@@ -238,18 +239,18 @@ return (
           {activePage === "students" && (
             <StudentForm
               isEditing={!!editStudent}
-              selectedStudent={editStudent}
+              selectedStudent={editStudent || null}
               onSubmit={(data) => {
                 const isEditing = !!editStudent;
                 const endpoint = isEditing
                   ? `http://127.0.0.1:5000/api/students?id=${editStudent.id}`
                   : "http://127.0.0.1:5000/api/students";
 
-                  const method = isEditing ? "PUT" : "POST";
+                const method = isEditing ? "PUT" : "POST";
 
                 fetch(endpoint, {
                   method,
-                  headers: {"Content-Type": "application/json",},
+                  headers: {"Content-Type": "application/json"},
                   body: JSON.stringify(data),
                 })
                   .then((res) => res.json())
@@ -258,7 +259,6 @@ return (
                     loadStudents();
                     onCancel();
                     clearEdit?.();
-
                     if (onRowSelect) onRowSelect(null);
                   })
                   .catch((err) => console.error("Error creating student:", err));
