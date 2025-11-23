@@ -95,7 +95,7 @@ def update_student():
     gender = data.get("gender")
     yearLevel = data.get("yearLevel")
     program_id = data.get("program_id")
-    profile_photo_url = data.get("profile_photo_url")
+    profile_photo_url = data.get("profile_photo_url") or None
 
     if not idNumber or not firstname or not lastname or not gender or not yearLevel or not program_id:
         return jsonify({"error": "Missing required fields"}), 400

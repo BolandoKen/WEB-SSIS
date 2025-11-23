@@ -28,6 +28,7 @@
     order: 0;
     flex-grow: 0;
 }
+
 .text-section{
     display: flex;
     flex-direction: column;
@@ -49,16 +50,6 @@
 
 .subtext{
     font-size: var(--font-size-small);
-}
-
-.profile-pic{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    height: 80px;
-    background-color: var(--color-neutral);
-    border-radius: 100%;
 }
 
 .auth-input{

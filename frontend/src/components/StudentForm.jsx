@@ -129,6 +129,54 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
     }
   };
 
+  const handleRemoveImage = async () => {
+  const currentUrl = formData.profile_photo_url;
+  if (!currentUrl) return;
+
+  // Show loading spinner
+  setUploading(true); 
+  setImageLoading(true);
+
+  // Extract filename from URL
+  const filename = currentUrl.split("/storage/v1/object/public/student-photos/")[1];
+  if (!filename) {
+    setUploading(false);
+    setImageLoading(false);
+    return;
+  }
+
+  try {
+    // Delete from server
+    await fetch(
+      `http://127.0.0.1:5000/api/students/delete-profile?filename=${filename}`,
+      { method: "DELETE" }
+    );
+
+    // Remove from newly uploaded list (if applicable)
+    uploadedFilesRef.current = uploadedFilesRef.current.filter(
+      (f) => f !== currentUrl
+    );
+
+    // Clear UI
+    setFormData((prev) => ({
+      ...prev,
+      profile_photo_url: ""
+    }));
+
+    // If editing, mark the original photo as "removed"
+    if (isEditing) {
+      originalPhotoRef.current = null;
+    }
+  } catch (err) {
+    console.error("Error removing image:", err);
+  } finally {
+    // Hide loading spinner
+    setUploading(false);
+    setImageLoading(false);
+  }
+};
+
+
   const handleCancel = async () => {
     // Delete all newly uploaded files from this session
     for (const fileUrl of uploadedFilesRef.current) {
@@ -233,29 +281,35 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
             }
           }}
         />
-      </div>
       
-      <div className="name-section">
-        <input
-          className="input-field"
-          type="text"
-          name="firstname"
-          placeholder="Firstname"
-          value={formData.firstname}
-          onChange={handleChange}
-          required
-        />
-        <input
-          className="input-field"
-          type="text"
-          name="lastname"
-          placeholder="Lastname"
-          value={formData.lastname}
-          onChange={handleChange}
-          required
-        />
+        <div className="name-section">
+          <input
+            className="input-field"
+            type="text"
+            name="firstname"
+            placeholder="Firstname"
+            value={formData.firstname}
+            onChange={handleChange}
+            required
+          />
+          <input
+            className="input-field"
+            type="text"
+            name="lastname"
+            placeholder="Lastname"
+            value={formData.lastname}
+            onChange={handleChange}
+            required
+          />
+          <button 
+            type="button"   
+            className="cancel-button"
+            onClick={handleRemoveImage}
+          >
+            Remove Image
+          </button>
+        </div>
       </div>
-
       <div className="detail-section">
         <Dropdown
           className="form-dropdown"
@@ -270,6 +324,7 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
           type="text"
           name="idNumber"
           placeholder="0000-0000"
+          id="idnumber-field"
           value={formData.idNumber}
           onChange={async (e) => {
             let value = e.target.value.replace(/[^\d-]/g, "");
