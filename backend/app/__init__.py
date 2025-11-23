@@ -1,12 +1,19 @@
 import os
 from flask import Flask, send_from_directory
+from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 from app.db import close_db
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def create_app():
     # Correct path: from backend/app → ../frontend/build
     static_folder_path = os.path.join(os.path.dirname(__file__), "../../frontend/build")
     app = Flask(__name__, static_folder=static_folder_path, static_url_path="/")
+
+    app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'super-secret-key')
+    jwt = JWTManager(app)
 
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
     CORS(app)
