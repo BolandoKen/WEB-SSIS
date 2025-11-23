@@ -251,10 +251,24 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
             const file = e.target.files[0];
             if (!file) return;
 
+            // Only allow images
+            if (!file.type.startsWith("image/")) {
+              alert("Only image files are allowed.");
+              e.target.value = ""; // reset file input
+              return;
+            }
+
+            // Limit size to 2MB
+            const maxSize = 2 * 1024 * 1024;
+            if (file.size > maxSize) {
+              alert("The selected image is too large. Maximum allowed size is 2MB.");
+              e.target.value = "";
+              return;
+            }
+
             setUploading(true);
 
             try {
-              // Upload the new file WITHOUT deleting the old one yet
               const form = new FormData();
               form.append("file", file);
 
@@ -268,10 +282,7 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
 
               const data = await res.json();
               if (data.url) {
-                // Track this newly uploaded file
                 uploadedFilesRef.current.push(data.url);
-                
-                // Update the form data to show the new image
                 setFormData((prev) => ({ ...prev, profile_photo_url: data.url }));
               }
             } catch (err) {
@@ -281,7 +292,6 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
             }
           }}
         />
-      
         <div className="name-section">
           <input
             className="input-field"
