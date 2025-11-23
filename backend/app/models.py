@@ -2,6 +2,8 @@ from app.db import get_db
 from psycopg2.extras import RealDictCursor
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.models import get_db
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+
 
 class User:
     @staticmethod

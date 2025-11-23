@@ -23,9 +23,10 @@ function AuthenticationPage({ onLogin }) {
 
       const data = await response.json();
       if (response.ok) {
-        // Extract username from the response message or use email as fallback
-        const username = data.username || email.split('@')[0];
-        onLogin(username);
+        // Save token to localStorage for persistence
+        localStorage.setItem("token", data.token);
+        // Send user info to parent component
+        onLogin(data.user);
       } else {
         alert(data.error || "Login failed");
       }
@@ -34,6 +35,7 @@ function AuthenticationPage({ onLogin }) {
       console.error(err);
     }
   };
+
 
   const handleSignup = async (formData) => {
     const { username, email, password } = formData;
