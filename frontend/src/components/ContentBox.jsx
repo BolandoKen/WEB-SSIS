@@ -45,7 +45,7 @@ function ContentBox({ activePage }) {
         collegename,
         program_id,
         college_id,
-        profile_photo_url  // ← This was missing!
+        profile_photo_url  
       });
     }
     setIsAdding(true);
