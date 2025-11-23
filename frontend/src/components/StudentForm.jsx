@@ -6,6 +6,9 @@ import LoadingSpinner from "./LoadingSpinner";
 
 function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
   const fileInputRef = useRef(null);
+  const uploadedFilesRef = useRef([]); // Track all newly uploaded files in this session
+  const originalPhotoRef = useRef(null); // Track original photo URL
+  
   const [formData, setFormData] = useState({
     firstname: "",
     lastname: "",
@@ -34,12 +37,6 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
     formData.program_id !== "" &&
     !idError;
 
-  // useEffect(() => {
-  //   if (selectedStudent?.profile_photo_url) {
-  //     setImageLoading(true);
-  //   }
-  // }, [selectedStudent]);
-
   useEffect(() => {
     if (selectedStudent) {
       setFormData({
@@ -52,7 +49,9 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
         program_id: selectedStudent.program_id || "",
         profile_photo_url: selectedStudent.profile_photo_url || "",
       });
-
+      
+      // Store original photo URL
+      originalPhotoRef.current = selectedStudent.profile_photo_url || null;
       setInitialLoading(false);  
     } else {
       setFormData({
@@ -65,9 +64,13 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
         program_id: "",
         profile_photo_url: "",
       });
-
+      
+      originalPhotoRef.current = null;
       setInitialLoading(false);  
     }
+    
+    // Reset uploaded files tracker
+    uploadedFilesRef.current = [];
   }, [selectedStudent]);
 
   useEffect(() => {
@@ -97,11 +100,6 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
       });
   }, [formData.college_id]);
 
-  useEffect(() => {
-    console.log("Selected student:", selectedStudent);
-    console.log("Form data after selecting:", formData);
-  }, [formData, selectedStudent]);
-
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -114,7 +112,33 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const deleteUploadedFile = async (fileUrl) => {
+    if (!fileUrl) return;
+    
+    const filePath = fileUrl.split("/storage/v1/object/public/student-photos/")[1];
+    if (!filePath) return;
+
+    try {
+      await fetch(
+        `http://127.0.0.1:5000/api/students/delete-profile?filename=${filePath}`,
+        { method: "DELETE" }
+      );
+      console.log("Deleted uploaded file:", filePath);
+    } catch (err) {
+      console.error("Error deleting file:", err);
+    }
+  };
+
+  const handleCancel = async () => {
+    // Delete all newly uploaded files from this session
+    for (const fileUrl of uploadedFilesRef.current) {
+      await deleteUploadedFile(fileUrl);
+    }
+    
+    onToggle();
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (idError) return;
 
@@ -122,8 +146,30 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
       ? window.confirm("Are you sure you want to save these changes?")
       : window.confirm("Are you sure you want to add this student?");
     
-    if (!confirmed) return; 
+    if (!confirmed) {
+      // User cancelled submission - delete all newly uploaded files
+      for (const fileUrl of uploadedFilesRef.current) {
+        await deleteUploadedFile(fileUrl);
+      }
+      
+      // Restore original photo if editing
+      if (isEditing && originalPhotoRef.current) {
+        setFormData(prev => ({ ...prev, profile_photo_url: originalPhotoRef.current }));
+      } else {
+        setFormData(prev => ({ ...prev, profile_photo_url: "" }));
+      }
+      
+      uploadedFilesRef.current = [];
+      return;
+    }
 
+    // User confirmed - now delete the original photo if we uploaded a new one
+    if (isEditing && originalPhotoRef.current && formData.profile_photo_url !== originalPhotoRef.current) {
+      await deleteUploadedFile(originalPhotoRef.current);
+    }
+
+    // Clear the tracking since we're submitting successfully
+    uploadedFilesRef.current = [];
     onSubmit(formData);
   };
 
@@ -132,7 +178,6 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
   }
 
   return (
-    
     <form className="add-form" onSubmit={handleSubmit}>
       <div className="profile-section">
         <div className="profile-container">
@@ -161,20 +206,7 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
             setUploading(true);
 
             try {
-              // delete old file
-              if (formData.profile_photo_url) {
-                const oldFilePath = formData.profile_photo_url.split(
-                  "/storage/v1/object/public/student-photos/"
-                )[1];
-
-                if (oldFilePath) {
-                  await fetch(
-                    `http://127.0.0.1:5000/api/students/delete-profile?filename=${oldFilePath}`,
-                    { method: "DELETE" }
-                  );
-                }
-              }
-
+              // Upload the new file WITHOUT deleting the old one yet
               const form = new FormData();
               form.append("file", file);
 
@@ -188,6 +220,10 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
 
               const data = await res.json();
               if (data.url) {
+                // Track this newly uploaded file
+                uploadedFilesRef.current.push(data.url);
+                
+                // Update the form data to show the new image
                 setFormData((prev) => ({ ...prev, profile_photo_url: data.url }));
               }
             } catch (err) {
@@ -198,6 +234,7 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
           }}
         />
       </div>
+      
       <div className="name-section">
         <input
           className="input-field"
@@ -227,7 +264,7 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
           value={formData.gender}
           onSelect={(val) => handleDropdown("gender", val)}
         />
-        {/* ID Number */}
+        
         <input
           className="input-field"
           type="text"
@@ -273,33 +310,30 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
         />
       </div>
 
-    <div className="dropdown-section">
-    {/* College Dropdown */}
-    <Dropdown
-        className="form-dropdown"
-        label={collegeOptions.find((opt) => opt.value === Number(formData.college_id))?.label || "College"}
-        options={collegeOptions}
-        value={formData.college_id}
-        onSelect={(val) => handleDropdown("college_id", val)}
-    />
+      <div className="dropdown-section">
+        <Dropdown
+          className="form-dropdown"
+          label={collegeOptions.find((opt) => opt.value === Number(formData.college_id))?.label || "College"}
+          options={collegeOptions}
+          value={formData.college_id}
+          onSelect={(val) => handleDropdown("college_id", val)}
+        />
 
-    {/* Program Dropdown */}
-    <Dropdown
-        className="form-dropdown"
-        label={programOptions.find((opt) => opt.value === Number(formData.program_id))?.label || "Program"}
-        options={programOptions}
-        value={formData.program_id}
-        onSelect={(val) => handleDropdown("program_id", val)}
-        disabled={!formData.college_id}
-    />
-    </div>
-
+        <Dropdown
+          className="form-dropdown"
+          label={programOptions.find((opt) => opt.value === Number(formData.program_id))?.label || "Program"}
+          options={programOptions}
+          value={formData.program_id}
+          onSelect={(val) => handleDropdown("program_id", val)}
+          disabled={!formData.college_id}
+        />
+      </div>
 
       <div className="button-section">
         <button 
           type="button"   
           className="cancel-button"   
-          onClick={onToggle}
+          onClick={handleCancel}
         >
           Cancel
         </button>
