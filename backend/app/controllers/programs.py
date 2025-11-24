@@ -16,6 +16,11 @@ def get_program(program_code):
         return jsonify({"error": "Program not found"}), 404
     return jsonify(dict(program))
 
+@programs_bp.route("/college/<int:college_id>", methods=["GET"])
+def get_programs_by_college(college_id):
+    programs = Program.by_college(college_id)
+    return jsonify([dict(p) for p in programs])
+
 @programs_bp.route("/", methods=["POST"])
 def create_program():
     data = request.get_json()

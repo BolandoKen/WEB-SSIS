@@ -1,0 +1,61 @@
+.filter-panel {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  width: 250px;
+  background-color: #f9f9f9;
+  transition: max-height 0.3s ease;
+}
+
+.filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.filter-title {
+  margin: 0;
+  font-size: 16px;
+}
+
+.toggle-btn {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.filter-group {
+  margin-top: 10px;
+}
+
+.filter-item {
+  margin-bottom: 10px;
+}
+
+.filter-item label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.filter-item input,
+.filter-item select {
+  width: 100%;
+  padding: 4px 6px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.clear-btn {
+  margin-top: 10px;
+  padding: 6px 10px;
+  border: none;
+  background-color: #ff5a5f;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.clear-btn:hover {
+  background-color: #e04848;
+}

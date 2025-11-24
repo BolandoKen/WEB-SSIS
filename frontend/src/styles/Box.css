@@ -27,6 +27,15 @@
   flex-grow: 0;
 }
 
+.searchbar-container{
+  display: flex;
+  flex: 1;
+  box-shadow: var(--protruding);
+  padding: 10px;
+  border-radius: 50px;
+  width: 100%;
+}
+
 .dropdown-container{
   width: 140px;
 }

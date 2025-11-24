@@ -111,4 +111,48 @@ class Student:
         result = cursor.fetchone()
         cursor.close()
         return result[0] if result else None
+
+    @staticmethod
+    def filter(yearlevel=None, programcode=None, gender=None):
+        db = get_db()
+        cursor = db.cursor(cursor_factory=RealDictCursor)
+
+        query = """
+            SELECT 
+                s.id,
+                s.profile_photo_url,
+                s.idnumber,
+                s.firstname,
+                s.lastname,
+                s.gender,
+                s.yearlevel,
+                p.programCode,
+                p.programName,
+                c.collegeCode,
+                c.collegeName,
+                s.program_id,
+                c.id AS college_id
+            FROM students s
+            JOIN programs p ON s.program_id = p.id
+            JOIN colleges c ON p.college_id = c.id
+            WHERE 1=1
+        """
+
+        params = []
+
+        if yearlevel:
+            query += " AND s.yearlevel = %s"
+            params.append(yearlevel)
+
+        if programcode:
+            query += " AND p.programCode = %s"
+            params.append(programcode)
+
+        if gender:
+            query += " AND s.gender = %s"
+            params.append(gender)
+
+        cursor.execute(query, params)
+        return cursor.fetchall()
+
         

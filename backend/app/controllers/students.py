@@ -114,3 +114,18 @@ def delete_profile(filename):
         return jsonify({"message": "Deleted"}), 200
     except StorageApiError as e:
         return jsonify({"error": str(e)}), 500
+
+@students_bp.route("/filter", methods=["GET"])
+def filter_students():
+    yearlevel = request.args.get("yearlevel")
+    programcode = request.args.get("programcode")
+    gender = request.args.get("gender")
+
+    students = Student.filter(
+        yearlevel=yearlevel,
+        programcode=programcode,
+        gender=gender
+    )
+
+    return jsonify(students)
+

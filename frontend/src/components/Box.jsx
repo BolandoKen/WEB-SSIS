@@ -6,6 +6,8 @@ import PageButton from "./PageButton";
 import CollegeForm from "./CollegeForm";
 import ProgramForm from "./ProgramForm";
 import StudentForm from "./StudentForm";
+import ProgramsFilter from "./ProgramsFilter";
+import StudentFilter from "./StudentFilter";
 import "../styles/Box.css";
 
 function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag, selectedRow, editCollege, editProgram, editStudent, clearEdit }) {
@@ -60,6 +62,29 @@ function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag, selected
   const endIndex = startIndex + rowsPerPage;
   const currentRows = sortedRows.slice(startIndex, endIndex);
 
+  const handleStudentFilter = (filteredData) => {
+  if (!filteredData) {
+    loadStudents(); // reset
+    return;
+  }
+
+  const formatted = filteredData.map(s => [
+    s.id,
+    s.profile_photo_url || "",
+    s.idnumber,
+    s.firstname,
+    s.lastname,
+    s.gender,
+    s.yearlevel,
+    s.programcode || "N/A",
+    s.collegecode || "N/A",
+  ]);
+
+  setRows(formatted);
+  setCurrentPage(1);
+};
+
+
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
@@ -67,6 +92,29 @@ function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag, selected
   const handlePrevPage = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
+
+  const filterPrograms = (collegeId) => {
+    if (!collegeId) {
+      loadPrograms(); // show all programs if no college selected
+      return;
+    }
+
+    fetch(`http://127.0.0.1:5000/api/programs/college/${collegeId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        const formatted = data.map((p) => [
+          p.id,
+          p.programcode,     // Code
+          p.programname,     // Name
+          p.collegecode || "N/A", // College
+          p.collegename
+        ]);
+        setRows(formatted);
+      })
+      .catch((err) => console.error("Error filtering programs:", err));
+  };
+
+
 
   const loadcolleges = () => {
     fetch("http://127.0.0.1:5000/api/colleges")
@@ -271,7 +319,13 @@ return (
       ) : (
         <>
           <div className="box-tool-section">
-            <Searchbar 
+           {activePage === "programs" && (
+              <ProgramsFilter onCollegeSelect={(collegeId) => filterPrograms(collegeId)} />
+            )}
+            {activePage === "students" && (
+              <StudentFilter onFilter={handleStudentFilter} />
+            )}
+            <Searchbar
               onSearch={setSearchTerm}
               query={searchTerm}
             />
