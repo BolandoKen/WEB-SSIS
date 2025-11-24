@@ -6,8 +6,8 @@ import LoadingSpinner from "./LoadingSpinner";
 
 function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
   const fileInputRef = useRef(null);
-  const uploadedFilesRef = useRef([]); // Track all newly uploaded files in this session
-  const originalPhotoRef = useRef(null); // Track original photo URL
+  const uploadedFilesRef = useRef([]); 
+  const originalPhotoRef = useRef(null); 
   
   const [formData, setFormData] = useState({
     firstname: "",
@@ -39,7 +39,6 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
     !idError;
 
   useEffect(() => {
-    // Clear any existing timeout
     if (imageLoadTimeoutRef.current) {
       clearTimeout(imageLoadTimeoutRef.current);
     }
@@ -56,14 +55,11 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
         profile_photo_url: selectedStudent.profile_photo_url || "",
       });
       
-      // Store original photo URL
       originalPhotoRef.current = selectedStudent.profile_photo_url || null;
       
-      // Only show loading spinner if there's an actual photo URL (not the default icon)
       if (selectedStudent.profile_photo_url && selectedStudent.profile_photo_url !== "") {
         setImageLoading(true);
         
-        // Fallback: stop loading after 3 seconds if onLoad doesn't fire
         imageLoadTimeoutRef.current = setTimeout(() => {
           setImageLoading(false);
         }, 3000);
@@ -89,10 +85,8 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
       setInitialLoading(false);  
     }
     
-    // Reset uploaded files tracker
     uploadedFilesRef.current = [];
     
-    // Cleanup timeout on unmount
     return () => {
       if (imageLoadTimeoutRef.current) {
         clearTimeout(imageLoadTimeoutRef.current);
@@ -147,7 +141,7 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
 
     try {
       await fetch(
-        `http://127.0.0.1:5000/api/students/delete-profile?filename=${filePath}`,
+        `http://127.0.0.1:5000/api/students/delete-profile/${filePath}`,
         { method: "DELETE" }
       );
       console.log("Deleted uploaded file:", filePath);
@@ -160,10 +154,8 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
     const currentUrl = formData.profile_photo_url;
     if (!currentUrl) return;
 
-    // Show loading spinner
     setUploading(true);
 
-    // Extract filename from URL
     const filename = currentUrl.split("/storage/v1/object/public/student-photos/")[1];
     if (!filename) {
       setUploading(false);
@@ -171,37 +163,31 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
     }
 
     try {
-      // Delete from server
       await fetch(
         `http://127.0.0.1:5000/api/students/delete-profile?filename=${filename}`,
         { method: "DELETE" }
       );
 
-      // Remove from newly uploaded list (if applicable)
       uploadedFilesRef.current = uploadedFilesRef.current.filter(
         (f) => f !== currentUrl
       );
 
-      // Clear UI
       setFormData((prev) => ({
         ...prev,
         profile_photo_url: ""
       }));
 
-      // If editing, mark the original photo as "removed"
       if (isEditing) {
         originalPhotoRef.current = null;
       }
     } catch (err) {
       console.error("Error removing image:", err);
     } finally {
-      // Hide loading spinner
       setUploading(false);
     }
   };
 
   const handleCancel = async () => {
-    // Delete all newly uploaded files from this session
     for (const fileUrl of uploadedFilesRef.current) {
       await deleteUploadedFile(fileUrl);
     }
@@ -218,12 +204,10 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
       : window.confirm("Are you sure you want to add this student?");
     
     if (!confirmed) {
-      // User cancelled submission - delete all newly uploaded files
       for (const fileUrl of uploadedFilesRef.current) {
         await deleteUploadedFile(fileUrl);
       }
       
-      // Restore original photo if editing
       if (isEditing && originalPhotoRef.current) {
         setFormData(prev => ({ ...prev, profile_photo_url: originalPhotoRef.current }));
       } else {
@@ -234,12 +218,10 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
       return;
     }
 
-    // User confirmed - now delete the original photo if we uploaded a new one
     if (isEditing && originalPhotoRef.current && formData.profile_photo_url !== originalPhotoRef.current) {
       await deleteUploadedFile(originalPhotoRef.current);
     }
 
-    // Clear the tracking since we're submitting successfully
     uploadedFilesRef.current = [];
     onSubmit(formData);
   };
@@ -284,14 +266,12 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
             const file = e.target.files[0];
             if (!file) return;
 
-            // Only allow images
             if (!file.type.startsWith("image/")) {
               alert("Only image files are allowed.");
-              e.target.value = ""; // reset file input
+              e.target.value = ""; 
               return;
             }
 
-            // Limit size to 2MB
             const maxSize = 2 * 1024 * 1024;
             if (file.size > maxSize) {
               alert("The selected image is too large. Maximum allowed size is 2MB.");
@@ -318,10 +298,8 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
                 uploadedFilesRef.current.push(data.url);
                 setFormData((prev) => ({ ...prev, profile_photo_url: data.url }));
                 
-                // Set image loading to show spinner until new image loads
                 setImageLoading(true);
                 
-                // Fallback timeout
                 imageLoadTimeoutRef.current = setTimeout(() => {
                   setImageLoading(false);
                 }, 3000);

@@ -60,24 +60,21 @@ function ProgramForm({ isEditing, onSubmit, onToggle, selectedProgram }) {
   e.preventDefault();
 
   const ignoreId = selectedProgram?.id; 
-
+  
   const resName = await fetch(
-    `http://127.0.0.1:5000/api/programs/check-name?name=${encodeURIComponent(
-      formData.programName
-    )}&ignore_id=${ignoreId ?? ''}`
+    `http://127.0.0.1:5000/api/programs/check-name/${encodeURIComponent(formData.programName)}?ignore_id=${ignoreId ?? ''}`
   );
+
   const { exists: duplicateName } = await resName.json();
   if (duplicateName) {
     alert('⚠️ Program Name already exists globally.');
     return;
   }
 
-  // Check for duplicate program code
   const resCode = await fetch(
-    `http://127.0.0.1:5000/api/programs/check-code?code=${encodeURIComponent(
-      formData.programCode
-    )}&ignore_id=${ignoreId ?? ''}`
+    `http://127.0.0.1:5000/api/programs/check-code/${encodeURIComponent(formData.programCode)}?ignore_id=${ignoreId ?? ''}`
   );
+
   const { exists: duplicateCode } = await resCode.json();
   if (duplicateCode) {
     alert('⚠️ Program Code already exists globally.');

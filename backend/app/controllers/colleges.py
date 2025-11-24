@@ -15,7 +15,7 @@ def get_colleges():
         for c in colleges
     ])
 
-@colleges_bp.route("", methods=["POST"])
+@colleges_bp.route("/", methods=["POST"])
 def create_college():
     data = request.get_json()
     collegename = data.get("collegename")
@@ -30,19 +30,15 @@ def create_college():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-@colleges_bp.route("", methods=["DELETE"])
-def delete_college():
-    college_id = request.args.get("id", type=int)
-    
+@colleges_bp.route("/<int:college_id>", methods=["DELETE"])
+def delete_college(college_id):
     if College.delete(college_id):
         return jsonify({"message": "College deleted successfully"})
     else:
         return jsonify({"error": "Failed to delete college"}), 400
     
-@colleges_bp.route("", methods=["PUT"])
-def update_college():
-    college_id = request.args.get("id", type=int)
-
+@colleges_bp.route("/<int:college_id>", methods=["PUT"])
+def update_college(college_id):
     data = request.get_json()
     college_code = data.get("collegecode")
     college_name = data.get("collegename")

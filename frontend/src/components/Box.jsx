@@ -179,8 +179,8 @@ return (
               onSubmit={(data) => {
                 const isEditing = !!editCollege; 
                 const endpoint = isEditing
-                  ? `http://127.0.0.1:5000/api/colleges?id=${editCollege.id}`
-                  : "http://127.0.0.1:5000/api/colleges";
+                  ? `http://127.0.0.1:5000/api/colleges/${editCollege.id}`
+                  : "http://127.0.0.1:5000/api/colleges/";
 
                 const method = isEditing ? "PUT" : "POST"
 
@@ -212,8 +212,8 @@ return (
               onSubmit={(data) => {
                 const isEditing = !!editProgram;
                 const endpoint = isEditing
-                  ? `http://127.0.0.1:5000/api/programs?id=${editProgram.id}`
-                  : "http://127.0.0.1:5000/api/programs";
+                  ? `http://127.0.0.1:5000/api/programs/${editProgram.id}`
+                  : "http://127.0.0.1:5000/api/programs/";
 
                 const method = isEditing ? "PUT" : "POST";
 
@@ -244,8 +244,8 @@ return (
               onSubmit={(data) => {
                 const isEditing = !!editStudent;
                 const endpoint = isEditing
-                  ? `http://127.0.0.1:5000/api/students?id=${editStudent.id}`
-                  : "http://127.0.0.1:5000/api/students";
+                  ? `http://127.0.0.1:5000/api/students/${editStudent.id}`
+                  : "http://127.0.0.1:5000/api/students/";
 
                 const method = isEditing ? "PUT" : "POST";
 

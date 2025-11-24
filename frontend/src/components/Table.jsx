@@ -60,7 +60,6 @@ function Table({ columns, rows, onRowClick, onSort, sortConfig, activePage}) {
             {row.slice(0, columns.length).map((cell, cellIndex) => {
               if (cellIndex === 0) return null;
 
-              // Hide image column when not on students page
               if (cellIndex === 1 && activePage !== "students") return null;
 
               return (

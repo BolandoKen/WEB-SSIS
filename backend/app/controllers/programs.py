@@ -16,7 +16,7 @@ def get_program(program_code):
         return jsonify({"error": "Program not found"}), 404
     return jsonify(dict(program))
 
-@programs_bp.route("", methods=["POST"])
+@programs_bp.route("/", methods=["POST"])
 def create_program():
     data = request.get_json()
 
@@ -36,19 +36,15 @@ def create_program():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-@programs_bp.route("", methods=["DELETE"])
-def delete_program():
-    program_id = request.args.get("id", type=int)
-
+@programs_bp.route("/<int:program_id>", methods=["DELETE"])
+def delete_program(program_id):
     if Program.delete(program_id):
         return jsonify({"message": "Program deleted successfully"})
     else:
         return jsonify({"error": "Failed to delete program"}), 400
-    
-@programs_bp.route("", methods=["PUT"])
-def update_program():
-    program_id = request.args.get("id", type=int)
 
+@programs_bp.route("/<int:program_id>", methods=["PUT"])
+def update_program(program_id):
     data = request.get_json()
     program_code = data.get("programCode")
     program_name = data.get("programName")
@@ -61,10 +57,9 @@ def update_program():
         return jsonify({"message": "Program updated successfully"})
     else:
         return jsonify({"error": "Failed to update program"}), 400
-    
-@programs_bp.route("/check-name", methods=["GET"])
-def check_program_name():
-    name = request.args.get("name")
+
+@programs_bp.route("/check-name/<string:name>", methods=["GET"])
+def check_program_name(name):
     ignore_id = request.args.get("ignore_id", type=int)
 
     if not name:
@@ -73,9 +68,8 @@ def check_program_name():
     exists = Program.exists_name_global(name, ignore_id)
     return jsonify({"exists": exists})
 
-@programs_bp.route("/check-code", methods=["GET"])
-def check_program_code():
-    code = request.args.get("code")
+@programs_bp.route("/check-code/<string:code>", methods=["GET"])
+def check_program_code(code):
     ignore_id = request.args.get("ignore_id", type=int)
 
     if not code:

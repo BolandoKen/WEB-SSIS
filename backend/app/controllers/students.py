@@ -26,7 +26,7 @@ def check_id_number(id_number):
     student = Student.get(id_number)
     return jsonify({"exists": student is not None})
 
-@students_bp.route("", methods=["POST"])
+@students_bp.route("/", methods=["POST"])
 def create_student():
     data = request.get_json()
     idNumber = data.get("idNumber")
@@ -46,10 +46,8 @@ def create_student():
 
     return jsonify({"message": "Student created successfully"}), 201
 
-@students_bp.route("", methods=["DELETE"])
-def delete_student():
-    student_id = request.args.get("id", type=int)
-
+@students_bp.route("/<int:student_id>", methods=["DELETE"])
+def delete_student(student_id):
     try:
         profile_photo_url = Student.get_profile_photo_url(student_id)
 
@@ -70,11 +68,8 @@ def delete_student():
         print(f"Error during deletion: {e}")
         return jsonify({"error": "Failed to delete student"}), 400
 
-
-@students_bp.route("", methods=["PUT"])
-def update_student():
-    student_id = request.args.get("id", type=int)
-
+@students_bp.route("/<int:student_id>", methods=["PUT"])
+def update_student(student_id):
     data = request.get_json()
     idNumber = data.get("idNumber")
     firstname = data.get("firstname")
@@ -109,9 +104,8 @@ def upload_profile():
     except StorageApiError as e:
         return jsonify({"error": f"Upload failed: {e}"}), 500
 
-@students_bp.route("/delete-profile", methods=["DELETE"])
-def delete_profile():
-    filename = request.args.get("filename")
+@students_bp.route("/delete-profile/<string:filename>", methods=["DELETE"])
+def delete_profile(filename):
     if not filename:
         return jsonify({"error": "No file specified"}), 400
 

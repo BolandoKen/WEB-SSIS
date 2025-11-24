@@ -65,8 +65,8 @@ gap: 40px;
 }
 
 .detail-section > * {
-  flex: 1;              /* each child takes equal space */
-  min-width: 100px;         /* prevents overflow when shrinking */
+  flex: 1;              
+  min-width: 100px;         
 }
 
 #idnumber-field{

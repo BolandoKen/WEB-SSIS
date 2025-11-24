@@ -8,16 +8,15 @@ function Toolbar({
   selectedRow, 
   activePage, 
   onDeleteSuccess, 
-  onEdit // 👈 new prop
+  onEdit 
 }) {
   const handleDelete = async () => {
   if (!selectedRow) return;
 
-  // ✅ Ask for confirmation
   const confirmed = window.confirm("Are you sure you want to delete this record?");
   if (!confirmed) return;
 
-  const id = selectedRow[0]; // integer ID
+  const id = selectedRow[0]; 
   let endpoint = "";
 
   switch (activePage) {
@@ -36,7 +35,7 @@ function Toolbar({
   }
 
   try {
-    const res = await fetch(`http://127.0.0.1:5000${endpoint}?id=${id}`, {
+    const res = await fetch(`http://127.0.0.1:5000${endpoint}/${id}`, {
       method: "DELETE",
     });
 
