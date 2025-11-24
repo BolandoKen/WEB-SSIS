@@ -31,9 +31,10 @@ function ContentBox({ activePage }) {
         college_id
       });
     } else if (activePage === "students") {
-      const [id, idnumber, firstname, lastname, gender, yearlevel, programcode, programname, collegecode, collegename, program_id, college_id, profile_photo_url] = rowData;
+      const [id, profile_photo_url, idnumber, firstname, lastname, gender, yearlevel, programcode, programname, collegecode, collegename, program_id, college_id] = rowData;
       setEditStudent({
         id,
+        profile_photo_url,
         idnumber,
         firstname,
         lastname,
@@ -45,7 +46,6 @@ function ContentBox({ activePage }) {
         collegename,
         program_id,
         college_id,
-        profile_photo_url  
       });
     }
     setIsAdding(true);

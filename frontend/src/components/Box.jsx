@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Searchbar from "./Searchbar";
 import Table from "./Table";
+import DeptTable from "./DeptTable";
 import PageButton from "./PageButton";
 import CollegeForm from "./CollegeForm";
 import ProgramForm from "./ProgramForm";
@@ -12,7 +13,7 @@ function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag, selected
   let columns = [];
 
   const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 10;
+  const rowsPerPage = 7;
   const [searchTerm, setSearchTerm] = useState("");
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 
@@ -104,6 +105,7 @@ function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag, selected
       .then((data) => {
         const formatted = data.map((s) => [
           s.id,
+          s.profile_photo_url || "",
           s.idnumber,
           s.firstname,
           s.lastname,
@@ -115,7 +117,6 @@ function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag, selected
           s.collegename,
           s.program_id,
           s.college_id,
-          s.profile_photo_url || ""
         ]);
         setRows(formatted);
       })
@@ -148,7 +149,7 @@ function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag, selected
 
   switch (activePage) {
     case "students":
-      columns = ["ID Number", "Firstname", "Lastname", "Gender", "Year Level", "Program"];
+      columns = ["ID","Profile Photo", "ID Number", "Firstname", "Lastname", "Gender", "Year Level", "Program"];
       break;
 
     case "programs":
@@ -276,18 +277,34 @@ return (
             />
           </div>
 
-          <div className="box-table-section">
-            <Table
-              columns={columns}
-              rows={currentRows}
-              selectedRow={selectedRow}
-              onSort={handleSort}        // Pass your sort handler
-              sortConfig={sortConfig} 
-              onRowClick={(row, index) => {
-                onRowSelect(row);
-              }}
-            />
-          </div>
+         <div className="box-table-section">
+        {activePage === "students" ? (
+          <Table
+            activePage={activePage}
+            columns={columns}
+            rows={currentRows}
+            selectedRow={selectedRow}
+            onSort={handleSort}
+            sortConfig={sortConfig}
+            onRowClick={(row, index) => {
+              onRowSelect(row);
+            }}
+          />
+        ) : (
+          <DeptTable
+            activePage={activePage}
+            columns={columns}
+            rows={currentRows}
+            selectedRow={selectedRow}
+            onSort={handleSort}
+            sortConfig={sortConfig}
+            onRowClick={(row, index) => {
+              onRowSelect(row);
+            }}
+          />
+        )}
+      </div>
+
 
           <div className="box-button-section">
             <PageButton
