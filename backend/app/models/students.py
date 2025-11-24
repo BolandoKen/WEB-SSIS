@@ -102,3 +102,13 @@ class Student:
             cursor.close()
             print("Error updating student:", e)
             return False
+        
+    @staticmethod
+    def get_profile_photo_url(student_id):
+        db = get_db()
+        cursor = db.cursor()
+        cursor.execute("SELECT profile_photo_url FROM students WHERE id = %s", (student_id,))
+        result = cursor.fetchone()
+        cursor.close()
+        return result[0] if result else None
+        

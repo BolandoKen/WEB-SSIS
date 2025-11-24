@@ -15,12 +15,10 @@ def register():
     if not username or not email or not password:
         return jsonify({"error": "Missing required fields"}), 400
 
-    # Check if user already exists
     existing_user = User.get_by_email(email)
     if existing_user:
         return jsonify({"error": "User already exists"}), 400
 
-    # Add new user
     success = User.add(username, email, password)
     if not success:
         return jsonify({"error": "Failed to register user"}), 500
@@ -45,12 +43,11 @@ def login():
     if not User.verify_password(password_hash, password):
         return jsonify({"error": "Invalid email or password"}), 401
 
-    # Create JWT token
     access_token = create_access_token(identity=user_email)
 
     return jsonify({
         "message": "Login successful",
-        "token": access_token,  # <--- token added
+        "token": access_token, 
         "user": {
             "id": user_id,
             "username": username,

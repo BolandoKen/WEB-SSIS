@@ -4,7 +4,7 @@ import os
 import uuid
 from app.supabase_client import supabase
 from storage3.exceptions import StorageApiError
-from app.db import get_db  # Correct import
+from app.db import get_db 
 
 students_bp = Blueprint("students", __name__, url_prefix="/api/students")
 
@@ -49,40 +49,27 @@ def create_student():
 @students_bp.route("", methods=["DELETE"])
 def delete_student():
     student_id = request.args.get("id", type=int)
-    
-    # Get database connection using the correct method
-    db = get_db()
-    cursor = db.cursor()
-    
+
     try:
-        # Fetch the student's profile photo URL before deletion
-        cursor.execute("SELECT profile_photo_url FROM students WHERE id = %s", (student_id,))
-        result = cursor.fetchone()
-        
-        if result and result[0]:
-            profile_photo_url = result[0]
-            # Extract filename from URL
-            if "/storage/v1/object/public/student-photos/" in profile_photo_url:
-                filename = profile_photo_url.split("/storage/v1/object/public/student-photos/")[1]
-                try:
-                    # Delete the photo from storage
-                    supabase.storage.from_("student-photos").remove([filename])
-                    print(f"Deleted profile photo: {filename}")
-                except StorageApiError as e:
-                    print(f"Failed to delete photo: {e}")
-                    # Continue with student deletion even if photo deletion fails
-        
-        # Now delete the student record using the model method
-        cursor.close()
+        profile_photo_url = Student.get_profile_photo_url(student_id)
+
+        if profile_photo_url and "/storage/v1/object/public/student-photos/" in profile_photo_url:
+            filename = profile_photo_url.split("/storage/v1/object/public/student-photos/")[1]
+
+            try:
+                supabase.storage.from_("student-photos").remove([filename])
+                print(f"Deleted profile photo: {filename}")
+            except StorageApiError as e:
+                print(f"Failed to delete photo: {e}")
+
         if Student.delete(student_id):
             return jsonify({"message": "Student deleted successfully"})
-        else:
-            return jsonify({"error": "Failed to delete student"}), 400
-            
+        return jsonify({"error": "Failed to delete student"}), 400
+
     except Exception as e:
         print(f"Error during deletion: {e}")
-        cursor.close()
         return jsonify({"error": "Failed to delete student"}), 400
+
 
 @students_bp.route("", methods=["PUT"])
 def update_student():

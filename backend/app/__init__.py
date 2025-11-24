@@ -8,7 +8,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def create_app():
-    # Correct path: from backend/app → ../frontend/build
     static_folder_path = os.path.join(os.path.dirname(__file__), "../../frontend/build")
     app = Flask(__name__, static_folder=static_folder_path, static_url_path="/")
 
@@ -20,10 +19,10 @@ def create_app():
     app.teardown_appcontext(close_db)
 
     # --- Register Blueprints ---
-    from app.routes.auth import auth_bp
-    from app.routes.colleges import colleges_bp
-    from app.routes.programs import programs_bp
-    from app.routes.students import students_bp
+    from app.controllers.auth import auth_bp
+    from app.controllers.colleges import colleges_bp
+    from app.controllers.programs import programs_bp
+    from app.controllers.students import students_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(colleges_bp)

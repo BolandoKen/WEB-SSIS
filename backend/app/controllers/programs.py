@@ -27,11 +27,9 @@ def create_program():
     if not program_code or not program_name or not college_id:
         return jsonify({"error": "Missing required fields"}), 400
 
-    # Check if program already exists
     if Program.get(program_code):
         return jsonify({"error": "Program already exists"}), 400
 
-    # Add program using helper
     try:
         Program.add(program_code, program_name, college_id)
         return jsonify({"message": "Program created successfully"}), 201
