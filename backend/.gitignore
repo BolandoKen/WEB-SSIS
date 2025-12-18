@@ -4,4 +4,6 @@ __pycache__/
 *.env
 !.env.sample
 
+/build
+
 .DS_Store

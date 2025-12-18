@@ -9,8 +9,9 @@
   gap: 10px;
   border: none;
 
-  width: 42px;
-  height: 42px;
+  width: 45px;
+  height: 45px;
+  padding: 5px 16px;
 
   /* Neutral */
   background: var(--color-neutral);

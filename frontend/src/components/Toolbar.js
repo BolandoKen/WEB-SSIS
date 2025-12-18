@@ -10,56 +10,57 @@ function Toolbar({
   onDeleteSuccess, 
   onEdit 
 }) {
-  const handleDelete = async () => {
-  if (!selectedRow) return;
 
-  const confirmed = window.confirm("Are you sure you want to delete this record?");
-  if (!confirmed) return;
+//   const handleDelete = async () => {
+//   if (!selectedRow) return;
 
-  const id = selectedRow[0]; 
-  let endpoint = "";
+//   const confirmed = window.confirm("Are you sure you want to delete this record?");
+//   if (!confirmed) return;
 
-  switch (activePage) {
-    case "colleges":
-      endpoint = "/api/colleges";
-      break;
-    case "programs":
-      endpoint = "/api/programs";
-      break;
-    case "students":
-      endpoint = "/api/students";
-      break;
-    default:
-      console.error("Unknown page:", activePage);
-      return;
-  }
+//   const id = selectedRow[0]; 
+//   let endpoint = "";
 
-  try {
-    const res = await fetch(`http://127.0.0.1:5000${endpoint}/${id}`, {
-      method: "DELETE",
-    });
+//   switch (activePage) {
+//     case "colleges":
+//       endpoint = "/api/colleges";
+//       break;
+//     case "programs":
+//       endpoint = "/api/programs";
+//       break;
+//     case "students":
+//       endpoint = "/api/students";
+//       break;
+//     default:
+//       console.error("Unknown page:", activePage);
+//       return;
+//   }
 
-    const data = await res.json();
+//   try {
+//     const res = await fetch(`http://127.0.0.1:5000${endpoint}/${id}`, {
+//       method: "DELETE",
+//     });
 
-    if (res.ok) {
-      console.log(data.message || "Deleted successfully");
-      if (onDeleteSuccess) onDeleteSuccess(id);
-      alert("✅ Record deleted successfully.");
-    } else {
-      console.error(data.error || "Delete failed");
-      alert("❌ Failed to delete the record.");
-    }
-  } catch (err) {
-    console.error("Error deleting:", err);
-    alert("⚠️ An error occurred while deleting.");
-  }
-};
+//     const data = await res.json();
+
+//     if (res.ok) {
+//       console.log(data.message || "Deleted successfully");
+//       if (onDeleteSuccess) onDeleteSuccess(id);
+//       alert("✅ Record deleted successfully.");
+//     } else {
+//       console.error(data.error || "Delete failed");
+//       alert("❌ Failed to delete the record.");
+//     }
+//   } catch (err) {
+//     console.error("Error deleting:", err);
+//     alert("⚠️ An error occurred while deleting.");
+//   }
+// };
 
 
   return (
     <div className="toolbar">
       <p className="title">{title}</p>
-      {showIconButtons && (
+      {/* {showIconButtons && (
         <div className="toolbar-actions">
           <IconButton
             icon="/icons/Edit.svg"
@@ -78,7 +79,8 @@ function Toolbar({
             onClick={handleDelete}
           />
         </div>
-      )}
+      )} */
+      }
     </div>
   );
 }

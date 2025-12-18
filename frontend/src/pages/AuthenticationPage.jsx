@@ -1,16 +1,23 @@
 import React, { useState } from "react";
 import LoginForm from "../components/LoginForm";
 import SignupForm from "../components/SignupForm";
+import TextPopup from "../components/TextPopup";
+import DeletePopup from "../components/DeletePopup";
 import "../styles/Login.css";
 
 function AuthenticationPage({ onLogin }) {
   const [isLogin, setIsLogin] = useState(true);
+  const [showTextPopup, setShowTextPopup] = useState(false);
+  const [textPopupMessage, setTextPopupMessage] = useState("");
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleLogin = async (formData) => {
     const { email, password } = formData;
 
     if (!email || !password) {
-      alert("Enter email and password");
+      setTextPopupMessage("Enter email and password");
+      setShowTextPopup(true);
       return;
     }
 
@@ -28,20 +35,22 @@ function AuthenticationPage({ onLogin }) {
         // Send user info to parent component
         onLogin(data.user);
       } else {
-        alert(data.error || "Login failed");
+        setTextPopupMessage(data.error || "Login failed");
+        setShowTextPopup(true);
       }
     } catch (err) {
-      alert("Server error");
+      setTextPopupMessage("Server error");
+      setShowTextPopup(true);
       console.error(err);
     }
   };
-
 
   const handleSignup = async (formData) => {
     const { username, email, password } = formData;
 
     if (!username || !email || !password) {
-      alert("Fill in all fields");
+      setTextPopupMessage("Fill in all fields");
+      setShowTextPopup(true);
       return;
     }
 
@@ -54,15 +63,22 @@ function AuthenticationPage({ onLogin }) {
 
       const data = await response.json();
       if (response.ok) {
-        alert(`Account created for ${username}`);
-        setIsLogin(true); // switch to login
+        setSuccessMessage(`Account created for ${username}`);
+        setShowSuccessPopup(true);
       } else {
-        alert(data.error || "Signup failed");
+        setTextPopupMessage(data.error || "Signup failed");
+        setShowTextPopup(true);
       }
     } catch (err) {
-      alert("Server error");
+      setTextPopupMessage("Server error");
+      setShowTextPopup(true);
       console.error(err);
     }
+  };
+
+  const handleSuccessClose = () => {
+    setShowSuccessPopup(false);
+    setIsLogin(true); // switch to login after successful signup
   };
 
   return (
@@ -74,6 +90,23 @@ function AuthenticationPage({ onLogin }) {
           <SignupForm onSubmit={handleSignup} onToggle={() => setIsLogin(true)} />
         )}
       </div>
+      
+      {showTextPopup && (
+        <TextPopup
+          message={textPopupMessage}
+          onClose={() => setShowTextPopup(false)}
+        />
+      )}
+      
+      {showSuccessPopup && (
+        <DeletePopup
+          title="Success"
+          message={successMessage}
+          onClose={handleSuccessClose}
+          onDeleteConfirm={handleSuccessClose}
+          confirmText="OK"
+        />
+      )}
     </div>
   );
 }

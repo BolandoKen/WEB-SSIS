@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import "../styles/ContentBox.css";
 import ToolbarContainer from "./ToolbarContainer";
 import Box from "./Box";
+import "../styles/ContentBox.css";
 
 function ContentBox({ activePage }) {
   const title = activePage.charAt(0).toUpperCase() + activePage.slice(1);
@@ -12,6 +12,7 @@ function ContentBox({ activePage }) {
   const [editProgram, setEditProgram] = useState(null);
   const [editStudent, setEditStudent] = useState(null);
 
+
   const handleEdit = (rowData) => {
     if (!rowData) {
       console.warn("⚠️ No row selected to edit");
@@ -19,7 +20,11 @@ function ContentBox({ activePage }) {
     }
     if (activePage === "colleges") {
       const [id, collegecode, collegename] = rowData;
-      setEditCollege({ id, collegename, collegecode });
+      setEditCollege({ 
+        id, 
+        collegename, 
+        collegecode 
+      });
     } else if (activePage === "programs") {
       const [id, programcode, programname, collegecode, collegename, college_id] = rowData;
       setEditProgram({
@@ -102,6 +107,8 @@ function ContentBox({ activePage }) {
           setEditProgram(null);
           setEditStudent(null);
         }}
+        onDeleteSuccess={handleDeleteSuccess}
+        onEdit={handleEdit}
       />
     </div>
   );

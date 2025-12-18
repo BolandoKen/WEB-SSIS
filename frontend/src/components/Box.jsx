@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Searchbar from "./Searchbar";
 import Table from "./Table";
 import DeptTable from "./DeptTable";
@@ -8,9 +8,11 @@ import ProgramForm from "./ProgramForm";
 import StudentForm from "./StudentForm";
 import ProgramsFilter from "./ProgramsFilter";
 import StudentFilter from "./StudentFilter";
+import TextPopup from "./TextPopup";
+
 import "../styles/Box.css";
 
-function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag, selectedRow, editCollege, editProgram, editStudent, clearEdit }) {
+function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag, selectedRow, editCollege, editProgram, editStudent, clearEdit, onDeleteSuccess, onEdit}) {
   const [rows, setRows] = useState([]);
   let columns = [];
 
@@ -18,6 +20,10 @@ function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag, selected
   const rowsPerPage = 7;
   const [searchTerm, setSearchTerm] = useState("");
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const timeoutRef = useRef(null);
+
 
   const handleSort = (columnIndex) => {
   const realIndex = columnIndex + 1;
@@ -28,6 +34,21 @@ function Box({ activePage, isAdding, onCancel, onRowSelect, reloadFlag, selected
   }
 
   setSortConfig({ key: realIndex, direction });
+};
+
+
+
+const handleShowSuccess = (message) => {
+  setSuccessMessage(message);
+  setShowSuccess(true);
+
+  if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+  timeoutRef.current = setTimeout(() => {
+    setShowSuccess(false);
+    setSuccessMessage("");
+    timeoutRef.current = null;
+  }, 2000); // 2 seconds - you can change this number
 };
 
   const filteredRows = rows.filter((row) =>
@@ -217,103 +238,124 @@ return (
       {isAdding ? (
         <>
           {activePage === "colleges" && (
-            <CollegeForm
-              selectedCollege={editCollege} 
-               existingColleges={rows.map(r => ({
-                  id: r[0],
-                  collegecode: r[1],
-                  collegename: r[2]
-                }))}
-              onSubmit={(data) => {
-                const isEditing = !!editCollege; 
-                const endpoint = isEditing
-                  ? `http://127.0.0.1:5000/api/colleges/${editCollege.id}`
-                  : "http://127.0.0.1:5000/api/colleges/";
+<CollegeForm
+  selectedCollege={editCollege}
+  existingColleges={rows.map(r => ({
+    id: r[0],
+    collegecode: r[1],
+    collegename: r[2]
+  }))}
+  onSubmit={(data) => {
+    const isEditing = !!editCollege; 
+    const endpoint = isEditing
+      ? `http://127.0.0.1:5000/api/colleges/${editCollege.id}`
+      : "http://127.0.0.1:5000/api/colleges/";
+    const method = isEditing ? "PUT" : "POST";
 
-                const method = isEditing ? "PUT" : "POST"
+    fetch(endpoint, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    })
+      .then(res => res.json())
+      .then(result => {
+        console.log(isEditing ? "College updated:" : "College created:", result);
 
-                fetch(endpoint, {
-                  method,
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify(data),
-                })
-                  .then((res) => res.json())
-                  .then((result) => {
-                    console.log(isEditing ? "College updated:" : "College created:", result);
-                    loadcolleges();
-                    onCancel();
-                    clearEdit?.();
+        handleShowSuccess(
+          isEditing
+            ? "College updated successfully!"
+            : "College added successfully!"
+        );
 
-                    if (onRowSelect) onRowSelect(null);
-                  })
-                  .catch((err) =>
-                    console.error(isEditing ? "Error updating college:" : "Error creating college:", err)
-                  );
-              }}
-              onToggle={onCancel}
-            />
+        loadcolleges();
+        onCancel();
+        clearEdit?.();
+        if (onRowSelect) onRowSelect(null);
+      })
+      .catch(err =>
+        console.error(isEditing ? "Error updating college:" : "Error creating college:", err)
+      );
+  }}
+  onToggle={onCancel}
+/>
+
           )}
           {activePage === "programs" && (
-            <ProgramForm
-              isEditing={!!editProgram}
-              selectedProgram={editProgram}
-              onSubmit={(data) => {
-                const isEditing = !!editProgram;
-                const endpoint = isEditing
-                  ? `http://127.0.0.1:5000/api/programs/${editProgram.id}`
-                  : "http://127.0.0.1:5000/api/programs/";
+<ProgramForm
+  isEditing={!!editProgram}
+  selectedProgram={editProgram}
+  onSubmit={(data) => {
+    const isEditing = !!editProgram;
+    const endpoint = isEditing
+      ? `http://127.0.0.1:5000/api/programs/${editProgram.id}`
+      : "http://127.0.0.1:5000/api/programs/";
+    const method = isEditing ? "PUT" : "POST";
 
-                const method = isEditing ? "PUT" : "POST";
+    fetch(endpoint, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    })
+      .then(res => res.json())
+      .then(result => {
+        console.log(isEditing ? "Program updated:" : "Program created:", result);
 
-                fetch(endpoint, {
-                  method,
-                  headers: {"Content-Type": "application/json",},
-                  body: JSON.stringify(data),
-                })
-                  .then((res) => res.json())
-                  .then((result) => {
-                    console.log(isEditing ? "Program updated:" : "Program created:", result);
-                    loadPrograms();
-                    onCancel();
-                    clearEdit?.();
+        handleShowSuccess(
+          isEditing
+            ? "Program updated successfully!"
+            : "Program added successfully!"
+        );
 
-                    if (onRowSelect) onRowSelect(null);
-                  })
-                  .catch((err) => 
-                    console.error(isEditing ? "Error updating program:" : "Error creating program:", err));
-              }}
-              onToggle={onCancel}
-            />
+        loadPrograms();
+        onCancel();
+        clearEdit?.();
+        if (onRowSelect) onRowSelect(null);
+      })
+      .catch(err =>
+        console.error(isEditing ? "Error updating program:" : "Error creating program:", err)
+      );
+  }}
+  onToggle={onCancel}
+/>
+
           )}
           {activePage === "students" && (
-            <StudentForm
-              isEditing={!!editStudent}
-              selectedStudent={editStudent || null}
-              onSubmit={(data) => {
-                const isEditing = !!editStudent;
-                const endpoint = isEditing
-                  ? `http://127.0.0.1:5000/api/students/${editStudent.id}`
-                  : "http://127.0.0.1:5000/api/students/";
 
-                const method = isEditing ? "PUT" : "POST";
+<StudentForm
+  isEditing={!!editStudent}
+  selectedStudent={editStudent || null}
+  onSubmit={(data) => {
+    const isEditing = !!editStudent;
+    const endpoint = isEditing
+      ? `http://127.0.0.1:5000/api/students/${editStudent.id}`
+      : "http://127.0.0.1:5000/api/students/";
+    const method = isEditing ? "PUT" : "POST";
 
-                fetch(endpoint, {
-                  method,
-                  headers: {"Content-Type": "application/json"},
-                  body: JSON.stringify(data),
-                })
-                  .then((res) => res.json())
-                  .then((result) => {
-                    console.log(isEditing ? "Student updated:" : "Student created:", result);
-                    loadStudents();
-                    onCancel();
-                    clearEdit?.();
-                    if (onRowSelect) onRowSelect(null);
-                  })
-                  .catch((err) => console.error("Error creating student:", err));
-              }}
-              onToggle={onCancel}
-            />
+    fetch(endpoint, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    })
+      .then(res => res.json())
+      .then(result => {
+        console.log(isEditing ? "Student updated:" : "Student created:", result);
+
+        handleShowSuccess(
+          isEditing
+            ? "Student information updated successfully."
+            : "Student added successfully."
+        );
+
+        loadStudents();
+        onCancel();
+        clearEdit?.();
+        if (onRowSelect) onRowSelect(null);
+      })
+      .catch(err => console.error("Error creating student:", err));
+  }}
+  onToggle={onCancel}
+/>
+
           )}
         </>
       ) : (
@@ -334,6 +376,7 @@ return (
          <div className="box-table-section">
         {activePage === "students" ? (
           <Table
+            onDeleteSuccess={onDeleteSuccess}
             activePage={activePage}
             columns={columns}
             rows={currentRows}
@@ -343,9 +386,12 @@ return (
             onRowClick={(row, index) => {
               onRowSelect(row);
             }}
+            selectedStudent={selectedRow}
+            onEdit={onEdit}
           />
         ) : (
           <DeptTable
+            onDeleteSuccess={onDeleteSuccess}
             activePage={activePage}
             columns={columns}
             rows={currentRows}
@@ -355,6 +401,8 @@ return (
             onRowClick={(row, index) => {
               onRowSelect(row);
             }}
+            selectedrow={selectedRow}
+            onEdit={onEdit}
           />
         )}
       </div>
@@ -385,8 +433,18 @@ return (
           </div>
         </>
       )}
+
+        {showSuccess && (
+  <TextPopup
+    title="Success"
+    message={successMessage}
+    onClose={() => setShowSuccess(false)}
+  />
+)}
     </div>
+    
   );
+
 }
 
 export default Box;

@@ -1,8 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Dropdown from './Dropdown';
+import TextPopup from './TextPopup';
+import DeletePopup from './DeletePopup';
 import '../styles/AddForm.css';
 
 function ProgramForm({ isEditing, onSubmit, onToggle, selectedProgram }) {
+  const [showTextPopup, setShowTextPopup] = useState(false);
+  const [textPopupMessage, setTextPopupMessage] = useState("");
+  const [showConfirmPopup, setShowConfirmPopup] = useState(false);
   const [formData, setFormData] = useState({
     programName: '',
     programCode: '',
@@ -44,7 +49,7 @@ function ProgramForm({ isEditing, onSubmit, onToggle, selectedProgram }) {
         }));
         setCollegeOptions(options);
       })
-      .catch((err) => console.error('❌ Error fetching colleges:', err));
+      .catch((err) => console.error('Error fetching colleges:', err));
   }, []);
 
   const handleChange = (e) => {
@@ -56,52 +61,56 @@ function ProgramForm({ isEditing, onSubmit, onToggle, selectedProgram }) {
     setFormData((s) => ({ ...s, college_id: Number.isNaN(num) ? '' : num }));
   };
 
+  const handleConfirmSubmit = () => {
+    setShowConfirmPopup(false);
+    onSubmit({
+      programName: String(formData.programName).trim(),
+      programCode: String(formData.programCode).trim(),
+      college_id: formData.college_id
+    });
+  };
+
+  const handleCancelSubmit = () => {
+    setShowConfirmPopup(false);
+  };
+
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const ignoreId = selectedProgram?.id; 
-  
-  const resName = await fetch(
-    `http://127.0.0.1:5000/api/programs/check-name/${encodeURIComponent(formData.programName)}?ignore_id=${ignoreId ?? ''}`
-  );
+    const ignoreId = selectedProgram?.id; 
+    
+    const resName = await fetch(
+      `http://127.0.0.1:5000/api/programs/check-name/${encodeURIComponent(formData.programName)}?ignore_id=${ignoreId ?? ''}`
+    );
 
-  const { exists: duplicateName } = await resName.json();
-  if (duplicateName) {
-    alert('⚠️ Program Name already exists globally.');
-    return;
-  }
+    const { exists: duplicateName } = await resName.json();
+    if (duplicateName) {
+      setTextPopupMessage('Program Name already exists globally.');
+      setShowTextPopup(true);
+      return;
+    }
 
-  const resCode = await fetch(
-    `http://127.0.0.1:5000/api/programs/check-code/${encodeURIComponent(formData.programCode)}?ignore_id=${ignoreId ?? ''}`
-  );
+    const resCode = await fetch(
+      `http://127.0.0.1:5000/api/programs/check-code/${encodeURIComponent(formData.programCode)}?ignore_id=${ignoreId ?? ''}`
+    );
 
-  const { exists: duplicateCode } = await resCode.json();
-  if (duplicateCode) {
-    alert('⚠️ Program Code already exists globally.');
-    return;
-  }
+    const { exists: duplicateCode } = await resCode.json();
+    if (duplicateCode) {
+      setTextPopupMessage('Program Code already exists globally.');
+      setShowTextPopup(true);
+      return;
+    }
 
-  const confirmed = selectedProgram
-    ? window.confirm('Are you sure you want to save these changes?')
-    : window.confirm('Are you sure you want to add this program?');
-
-  if (!confirmed) return; 
-
-  onSubmit({
-    programName: String(formData.programName).trim(),
-    programCode: String(formData.programCode).trim(),
-    college_id: formData.college_id
-  });
-};
+    setShowConfirmPopup(true);
+  };
 
   const selectedCollegeLabel = useMemo(() => {
-  if (formData.college_id && collegeOptions.length > 0) {
-    const found = collegeOptions.find(opt => opt.value === Number(formData.college_id));
-    if (found) return found.label;
-  }
-  return 'College';
-}, [formData.college_id, collegeOptions]);
-
+    if (formData.college_id && collegeOptions.length > 0) {
+      const found = collegeOptions.find(opt => opt.value === Number(formData.college_id));
+      if (found) return found.label;
+    }
+    return 'College';
+  }, [formData.college_id, collegeOptions]);
 
   return (
     <form className="add-form" onSubmit={handleSubmit}>
@@ -131,15 +140,36 @@ function ProgramForm({ isEditing, onSubmit, onToggle, selectedProgram }) {
         onSelect={handleCollegeChange}
       />
       <div className="button-section">
-        <button type="button" className="cancel-button" onClick={onToggle}>Cancel</button>
+        <button type="button" className="cancel-button" onClick={onToggle}>
+          Cancel
+        </button>
         <button 
           type="submit" 
           className="confirm-button"
           disabled={!canSubmit}
-          >
+        >
           {selectedProgram ? 'Save Changes' : 'Add Program'}
         </button>
       </div>
+      {showTextPopup && (
+        <TextPopup
+          message={textPopupMessage}
+          onClose={() => setShowTextPopup(false)}
+        />
+      )}
+      {showConfirmPopup && (
+        <DeletePopup
+          title="Confirm Changes"
+          message={
+            isEditing
+              ? "Are you sure you want to save these changes?"
+              : "Are you sure you want to add this program?"
+          }
+          onClose={handleCancelSubmit}
+          onDeleteConfirm={handleConfirmSubmit}
+          confirmText={isEditing ? "Save" : "Add"}
+        />
+      )}
     </form>
   );
 }

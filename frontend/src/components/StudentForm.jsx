@@ -2,12 +2,18 @@ import React, { useState, useEffect, useRef } from "react";
 import Dropdown from "./Dropdown";
 import "../styles/AddForm.css";
 import LoadingSpinner from "./LoadingSpinner";
+import TextPopup from "./TextPopup";
+import DeletePopup from "./DeletePopup";
 
 function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
   const fileInputRef = useRef(null);
   const uploadedFilesRef = useRef([]); 
   const originalPhotoRef = useRef(null); 
-  
+  const [showTextPopup, setShowTextPopup] = useState(false);
+  const [textPopupMessage, setTextPopupMessage] = useState("");
+  const [showConfirmPopup, setShowConfirmPopup] = useState(false);
+  const [textPopupTitle, setTextPopupTitle] = useState("");
+
   const [formData, setFormData] = useState({
     firstname: "",
     lastname: "",
@@ -186,6 +192,8 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
     }
   };
 
+  
+
   const handleCancel = async () => {
     for (const fileUrl of uploadedFilesRef.current) {
       await deleteUploadedFile(fileUrl);
@@ -194,35 +202,65 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
     onToggle();
   };
 
+  const handleClosePopup = () => {
+    setShowTextPopup(false);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (idError) return;
 
-    const confirmed = isEditing
-      ? window.confirm("Are you sure you want to save these changes?")
-      : window.confirm("Are you sure you want to add this student?");
-    
-    if (!confirmed) {
-      for (const fileUrl of uploadedFilesRef.current) {
-        await deleteUploadedFile(fileUrl);
-      }
-      
-      if (isEditing && originalPhotoRef.current) {
-        setFormData(prev => ({ ...prev, profile_photo_url: originalPhotoRef.current }));
-      } else {
-        setFormData(prev => ({ ...prev, profile_photo_url: "" }));
-      }
-      
-      uploadedFilesRef.current = [];
-      return;
-    }
+    setShowConfirmPopup(true);
+  };
 
-    if (isEditing && originalPhotoRef.current && formData.profile_photo_url !== originalPhotoRef.current) {
+  const handleConfirmSubmit = async () => {
+    setShowConfirmPopup(false);
+
+    if (
+      isEditing &&
+      originalPhotoRef.current &&
+      formData.profile_photo_url !== originalPhotoRef.current
+    ) {
       await deleteUploadedFile(originalPhotoRef.current);
     }
 
     uploadedFilesRef.current = [];
     onSubmit(formData);
+
+    setTextPopupTitle("Success");
+    setTextPopupMessage(
+      isEditing
+        ? "Student information updated successfully."
+        : "Student added successfully."
+    );
+    setShowTextPopup(true);
+    setTimeout(() => {
+  setShowTextPopup(false);
+  setTextPopupTitle("");
+}, 2000);
+
+  };
+
+  const handleCancelSubmit = async () => {
+    setShowConfirmPopup(false);
+
+    for (const fileUrl of uploadedFilesRef.current) {
+      await deleteUploadedFile(fileUrl);
+    }
+
+    if (isEditing && originalPhotoRef.current) {
+      setFormData(prev => ({
+        ...prev,
+        profile_photo_url: originalPhotoRef.current
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        profile_photo_url: ""
+      }));
+    }
+
+    uploadedFilesRef.current = [];
   };
 
   if (initialLoading) {
@@ -266,14 +304,17 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
             if (!file) return;
 
             if (!file.type.startsWith("image/")) {
-              alert("Only image files are allowed.");
-              e.target.value = ""; 
+
+              setTextPopupMessage("Only image files are allowed.");
+              setShowTextPopup(true);
+              e.target.value = "";
               return;
             }
 
             const maxSize = 2 * 1024 * 1024;
             if (file.size > maxSize) {
-              alert("The selected image is too large. Maximum allowed size is 2MB.");
+              setTextPopupMessage("The selected image is too large. Maximum allowed size is 2MB.");
+              setShowTextPopup(true);
               e.target.value = "";
               return;
             }
@@ -371,7 +412,8 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
                 const data = await res.json();
 
                 if (data.exists) {
-                  alert("⚠️ This ID number already exists! Please use another.");
+                  setTextPopupMessage("This ID number already exists! Please use another.");
+                  setShowTextPopup(true);
                   setFormData((prev) => ({ ...prev, idNumber: "" }));
                 }
               } catch (err) {
@@ -428,6 +470,26 @@ function StudentForm({ isEditing, onSubmit, onToggle, selectedStudent }) {
           {isEditing ? "Save Changes" : "Add Student"}
         </button>
       </div>
+      {showTextPopup && (
+        <TextPopup
+          message={textPopupMessage}
+          onClose={() => setShowTextPopup(false)}
+          title={textPopupTitle}
+        />
+      )}
+      {showConfirmPopup && (
+        <DeletePopup
+          message={
+            isEditing
+              ? "Are you sure you want to save these changes?"
+              : "Are you sure you want to add this student?"
+          }
+          onClose={handleCancelSubmit}
+          onDeleteConfirm={handleConfirmSubmit}
+          confirmText={isEditing ? "Save" : "Add"}
+          title="Confirm Changes"
+        />
+      )}
     </form>
   );
 }

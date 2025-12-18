@@ -13,24 +13,28 @@ function StudentFilter({ onFilter }) {
       .catch(err => console.error("Failed to load programs:", err));
   }, []);
 
-  const applyFilter = () => {
+  useEffect(() => {
     const params = new URLSearchParams();
 
     if (yearLevel) params.append("yearlevel", yearLevel);
     if (gender) params.append("gender", gender);
     if (programCode) params.append("programcode", programCode);
 
-    fetch(`http://127.0.0.1:5000/api/students/filter?${params.toString()}`)
-      .then(res => res.json())
-      .then(data => onFilter(data))
-      .catch(err => console.error("Filter failed:", err));
-  };
+    // Only filter if at least one criterion is selected
+    if (yearLevel || gender || programCode) {
+      fetch(`http://127.0.0.1:5000/api/students/filter?${params.toString()}`)
+        .then(res => res.json())
+        .then(data => onFilter(data))
+        .catch(err => console.error("Filter failed:", err));
+    } else {
+      onFilter(null); // reset to all students
+    }
+  }, [yearLevel, gender, programCode]);
 
   const resetFilter = () => {
     setYearLevel("");
     setGender("");
     setProgramCode("");
-    onFilter(null); // parent reloads all students
   };
 
   return (
@@ -60,8 +64,6 @@ function StudentFilter({ onFilter }) {
           </option>
         ))}
       </select>
-
-      <button onClick={applyFilter}>Filter</button>
       <button onClick={resetFilter}>Reset</button>
     </div>
   );
